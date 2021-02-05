@@ -20,6 +20,8 @@ ponds <- filter(ponds, !PondName %in% c("NAT-4", "NAT-5"))
 # GCS North American 1983 (EPSG 4269)
 coordinates(ponds) <- c("X_Meters", "Y_Meters")
 proj4string(ponds) <- CRS("+proj=tmerc +lat_0=0 +lon_0=-76.5 +k=0.9999 +x_0=304800 +y_0=0 +datum=NAD83 +units=m")
+# save metric projection before transforming 
+saveRDS(ponds, file="output/CoorMetric.rds")
 # reproject to be in WGS 84
 ponds <- spTransform(ponds, CRS("+init=epsg:4326"))
 # save projected spatial object 
