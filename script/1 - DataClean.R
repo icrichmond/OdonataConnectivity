@@ -57,3 +57,11 @@ zyg <- zyg %>%
 # save cleaned datasets
 fwrite(ani, "output/AnisopteraCleaned.csv")
 fwrite(zyg, "output/ZygopteraCleaned.csv")
+
+#### Clean Connectivity Data ####
+# remove connectivity values with NAT-4 and NAT-5 included 
+# NAT-4 and NAT-5 are in the randomized buffer of our connectivity
+# map, not appropriate measurements 
+conn <- conn[!(conn$Pond1=="NAT-4" | conn$Pond1 =="NAT-5"
+               | conn$Pond2 =="NAT-4" | conn$Pond2 == "NAT-5"),]
+fwrite(conn, "output/ConnectivityCleaned.csv")
