@@ -57,32 +57,10 @@ int500tally
 # 2 km buffer zone for each of the ponds in our list - we will then select the appropriate
 # number of neighbours so each pond has minimum 5 neighbours
 
-# we want our ponds as a dataframe so we can present the nearest neighbour later
-ponds_km_df <- as.data.frame(ponds_km)
-# use st_distance to calculate distances between study sites and create a matrix
-dist.mat <- st_distance(ponds_km)
-# sort and calculate the nearest distances 
-nndist2 <- apply(dist.mat, 1, function(x){
-  return(sort(x,partial=2)[2:7]) # select closest 5 neighbours, max. one pond could need is 5
-})
-# get the indices for nearest distance
-nnindex2 <- apply(dist.mat, 1, function(x){ order(x, decreasing=F)[2:7]})
-# make a new dataset showing the nearest neighbour data
-nndata <- ponds_km_df
-colnames(nndata)[1] <- "neighbour"
-colnames(nndata)[2:ncol(nndata)] <- 
-  paste0("n.", colnames(nndata)[2:ncol(nndata)])
-
-ponds_km_2 <- data.frame(ponds_km,
-                      nndata[nnindex2, ],
-                      n.distance = nndist2
-                      )
-rownames(ponds_km_2) <- seq(nrow(ponds_km_2))
-ponds_km_2
-
 # convert ponds_km back to sp 
 ponds_km_sp <- as_Spatial(ponds_km)
 # convert sp to ppp for spatsstat package 
 ponds_km_ppp <- as.ppp(ponds_km_sp)
+# calculate distances for 5 closest neighbours
 nndist(ponds_km_ppp, k = 1:5)
 
