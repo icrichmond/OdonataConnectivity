@@ -1,7 +1,8 @@
-# Buffer & Extraction
+# Buffer & Nearest Neighbours
 # Author: Isabella Richmond 
-# This script is for producing buffers around each study pond and extracting 
-# all other study ponds within the buffer for future analysis
+# This script is for producing biologically relevant buffers around each study pond to 
+# identify how many study ponds are within a biologically relevant distance. 
+# We then calculate the 5 nearest neighbours of each study pond and the distance between them
 
 #### Load Packages ####
 easypackages::packages("tidyverse", "sf", "sp", "spatstat", "maptools", "data.table")
