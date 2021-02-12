@@ -21,11 +21,11 @@ ponds <- filter(ponds, !PondName %in% c("NAT-4", "NAT-5"))
 coordinates(ponds) <- c("X_Meters", "Y_Meters")
 proj4string(ponds) <- CRS("+proj=tmerc +lat_0=0 +lon_0=-76.5 +k=0.9999 +x_0=304800 +y_0=0 +datum=NAD83 +units=m")
 # save metric projection before transforming 
-saveRDS(ponds, file="output/CoorMetric.rds")
+saveRDS(ponds, file="input/cleaned/CoorMetric.rds")
 # reproject to be in WGS 84
 ponds <- spTransform(ponds, CRS("+init=epsg:4326"))
 # save projected spatial object 
-saveRDS(ponds, file="output/CoorWGS.rds")
+saveRDS(ponds, file="input/cleaned/CoorWGS.rds")
 
 
 #### Clean Odonate Data ####
@@ -57,8 +57,8 @@ zyg <- zyg %>%
   mutate(shannon = diversity(.[,2:21], index="shannon")) %>%
   mutate(simpson = diversity(.[,2:21], index="simpson"))
 # save cleaned datasets
-fwrite(ani, "output/AnisopteraCleaned.csv")
-fwrite(zyg, "output/ZygopteraCleaned.csv")
+fwrite(ani, "input/cleaned/AnisopteraCleaned.csv")
+fwrite(zyg, "input/cleaned/ZygopteraCleaned.csv")
 
 #### Clean Connectivity Data ####
 # remove connectivity values with NAT-4 and NAT-5 included 
@@ -66,4 +66,4 @@ fwrite(zyg, "output/ZygopteraCleaned.csv")
 # map, not appropriate measurements 
 conn <- conn[!(conn$Pond1=="NAT-4" | conn$Pond1 =="NAT-5"
                | conn$Pond2 =="NAT-4" | conn$Pond2 == "NAT-5"),]
-fwrite(conn, "output/ConnectivityCleaned.csv")
+fwrite(conn, "input/cleaned/ConnectivityCleaned.csv")

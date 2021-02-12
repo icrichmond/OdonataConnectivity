@@ -7,10 +7,10 @@
 easypackages::packages("tidyverse", "data.table", "ggpubr")
 
 #### Load Data ####
-conn <- fread("output/ConnectivityCleaned.csv")
-nn <- fread("output/NearestNeighbours.csv")
-ani <- fread("output/AnisopteraCleaned.csv")
-zyg <- fread("output/ZygopteraCleaned.csv")
+conn <- fread("input/cleaned/ConnectivityCleaned.csv")
+nn <- fread("input/cleaned/NearestNeighbours.csv")
+ani <- fread("input/cleaned/AnisopteraCleaned.csv")
+zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
 
 #### Connectivity & Nearest Neighbours ####
 # we need to extract the connectivity values for each of the nearest neighbours 
@@ -32,7 +32,7 @@ conn_nn2 <- inner_join(nn_melt, conn, by = c("Pond1" = "Pond2", "Pond2" = "Pond1
 # combine datasets 
 conn_nn <- rbind(conn_nn1, conn_nn2)
 # save dataset 
-fwrite(conn_nn, "output/ConnectivityNearestNeigbour.csv")
+fwrite(conn_nn, "output/nearestneighbours/ConnectivityNearestNeigbour.csv")
 
 #### Average Distance & Resistance ####
 # calculate the average distance for the five closest neighbours of each pond 

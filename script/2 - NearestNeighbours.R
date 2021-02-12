@@ -8,7 +8,7 @@
 easypackages::packages("tidyverse", "sf", "sp", "spatstat", "maptools", "data.table")
 
 #### Load Data ####
-ponds <- readRDS("output/CoorWGS.rds")
+ponds <- readRDS("input/cleaned/CoorWGS.rds")
 
 #### Create Buffer ####
 # convert sp to sf 
@@ -19,10 +19,10 @@ ponds_km = st_transform(ponds, "+proj=utm +zone=18N +datum=WGS84 +units=km")
 plot(ponds_km)
 # produce 2 km buffer for Anisoptera - consistent with Perron et al 2021
 ponds_2buffer <- st_buffer(ponds_km, 2)
-saveRDS(ponds_2buffer, "output/twokmbuffer.rds")
+saveRDS(ponds_2buffer, "output/buffers/twokmbuffer.rds")
 # produce 500 m buffer for Zygoptera - consistent with Purse et al 2003
 ponds_500buffer <- st_buffer(ponds_km, 0.5)
-saveRDS(ponds_500buffer, "output/fivehundredmbuffer.rds")
+saveRDS(ponds_500buffer, "output/buffers/fivehundredmbuffer.rds")
 
 #### Calculate Intersections #### 
 # rename pond name column in points and buffers to reduce confusion 
@@ -101,4 +101,4 @@ nearestneighbours$dist.6[18] <- 1.824412
 nearestneighbours$which.6[18] <- "SWF-1204"
 
 # save the nearest neighbours dataset
-fwrite(nearestneighbours, "output/nearestneighbours.csv")
+fwrite(nearestneighbours, "output/nearestneighbours/nearestneighbours.csv")
