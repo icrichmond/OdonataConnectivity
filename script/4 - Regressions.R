@@ -4,7 +4,7 @@
 # to nearest neighbours and Odonata communities 
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "data.table", "ggpubr")
+easypackages::packages("tidyverse", "data.table", "ggpubr", "gt", "gtsummary")
 
 #### Load Data & Functions ####
 ani <- fread("output/AnisopteraResistance.csv")
@@ -88,7 +88,7 @@ summary(zyg_abun_dist_g)
 # row 3 of anisoptera has Simpson diversity value of zero, Gamma doesn't accept 
 # zero values, will switch it to 0.000001 so it is functionally acting as zero 
 # but still works with error structure
-ani$simpson[3] <- 0.000001
+ani$simpson[3] <- 0.0001
 
 ani_simp_res_g <- glm(simpson ~ meanres + sdres, family = Gamma, data = ani)
 summary(ani_simp_res_g)
@@ -113,3 +113,13 @@ gammamodels_residplots <- imap(gammamodels, resid_plots)
 pdf("graphics/modeldiagnostics/gammamodels.pdf")
 gammamodels_residplots
 dev.off()
+
+# all models look good except for Simpson diversity 
+# omit Simpson diversity from anaylsis. Unnecessary second 
+# measure of biodiversity, was only included out of curiosity
+
+# only significant results are Anisoptera abundance ~ average pond resistance
+# mean resistance and sd both negatively associated with Anisoptera abundance
+# write summary table 
+summ <- broom::tidy(ani_abun_res)
+write.csv(summ, "output/AnisopteraAbundanceResistance_Summary.csv")
