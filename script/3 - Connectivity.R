@@ -42,9 +42,6 @@ average <- conn_nn %>%
   dplyr::summarise(meandist = mean(dist), sddist = sd(dist), meanres = mean(Resistance), sdres = sd(Resistance))
 fwrite(average, "output/AverageResistance.csv")
 
-#### Linear Regressions ####
-# we want to test how average resistance and distance to neighbours influences 
-# odonate biodiversity and abundance 
 average <- rename(average, Pond = Pond1)
 # join odonate datasets with resistance and distance data
 ani_full <- inner_join(ani, average, by = "Pond")
