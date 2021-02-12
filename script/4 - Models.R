@@ -4,7 +4,7 @@
 # to nearest neighbours and Odonata communities 
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "data.table", "ggpubr", "gt", "gtsummary")
+easypackages::packages("tidyverse", "data.table")
 
 #### Load Data & Functions ####
 ani <- fread("output/AnisopteraResistance.csv")
@@ -122,4 +122,4 @@ dev.off()
 # mean resistance and sd both negatively associated with Anisoptera abundance
 # write summary table 
 summ <- broom::tidy(ani_abun_res)
-write.csv(summ, "output/AnisopteraAbundanceResistance_Summary.csv")
+write.csv(summ, "output/models/AnisopteraAbundanceResistance_Summary.csv")
