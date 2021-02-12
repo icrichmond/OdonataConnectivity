@@ -57,13 +57,30 @@ summary(zyg_simp_res)
 zyg_simp_dist <- lm(simpson ~ meandist + sddist, data=zyg)
 summary(zyg_simp_dist)
 
+## Species Richness ##
+# Anisoptera 
+ani_sr_res <- lm(speciescount ~ meanres + sdres, data = ani)
+summary(ani_sr_res)
+
+ani_sr_dist <- lm(speciescount ~ meandist + sddist, data=ani)
+summary(ani_sr_dist)
+
+# Zygoptera 
+zyg_sr_res <- lm(speciescount ~ meanres + sdres, data = zyg)
+summary(zyg_sr_res)
+
+zyg_sr_dist <- lm(speciescount ~ meandist + sddist, data=zyg)
+summary(zyg_sr_dist)
+
 # list models with names
 normalmodels <- list("Ani Abundance ~ Resistance" = ani_abun_res, "Ani Abundance ~ Distance" = ani_abun_dist,  
                      "Zyg Abundance ~ Resistance" = zyg_abun_res, "Zyg Abundance ~ Distance" = zyg_abun_dist, 
                      "Ani Shannon ~ Resistance" = ani_shann_res, "Ani Shannon ~ Distance" = ani_shann_dist, 
                      "Zyg Shannon ~ Resistance" = zyg_shann_res, "Zyg Shannon ~ Distance" = zyg_shann_dist, 
                      "Ani Simp ~ Resistance" = ani_simp_res, "Ani Simp ~ Distance" = ani_simp_dist, 
-                     "Zyg Simp ~ Resistance" = zyg_simp_res, "Zyg Simp ~ Distance" = zyg_simp_dist)
+                     "Zyg Simp ~ Resistance" = zyg_simp_res, "Zyg Simp ~ Distance" = zyg_simp_dist,
+                     "Ani Species ~ Resistance" = ani_sr_res, "Ani Species ~ Distance" = ani_sr_dist, 
+                     "Zyg Species ~ Resistance" = zyg_sr_res, "Zyg Species ~ Distance" = zyg_sr_dist)
 
 # make diagnostic plots for each model 
 normalmodels_residplots <- imap(normalmodels, resid_plots)
@@ -120,6 +137,12 @@ dev.off()
 
 # only significant results are Anisoptera abundance ~ average pond resistance
 # mean resistance and sd both negatively associated with Anisoptera abundance
+# note that Anisoptera species richness ~ average pond resistance is close to 
+# significant (0.06)
+
 # write summary table 
 summ <- broom::tidy(ani_abun_res)
 write.csv(summ, "output/models/AnisopteraAbundanceResistance_Summary.csv")
+
+summ2 <- broom::tidy(ani_sr_res)
+write.csv(summ2, "output/models/AnisopteraSpeciesRichnessResistance_Summary.csv")
