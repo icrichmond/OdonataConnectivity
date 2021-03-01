@@ -14,29 +14,28 @@ zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
 
 #### Connectivity & Nearest Neighbours ####
 # we need to extract the connectivity values for each of the nearest neighbours 
-
 # rename columns so they match conn 
-nn_melt <- nn_melt %>%
-  rename(Pond1 = Pond) %>%
-  rename(Pond2 = which) %>%
-  rename(Neighbour = variable)
+nn <- nn %>%
+  rename(Pond1 = Buffer) %>%
+  rename(Pond2 = IntersectingPonds) %>%
+  select(c(-X_Meters,-Y_Meters))
 # connectivity dataset only lists pond relationships once 
 # nearest neighbour dataset goes through each individually 
 # so need to do join between Pond 1 and Pond 2 and then the reverse 
 # relationship to find resistance values for each nearest neighbour 
-conn_nn1 <- inner_join(nn_melt, conn, by = c("Pond1", "Pond2"))
-conn_nn2 <- inner_join(nn_melt, conn, by = c("Pond1" = "Pond2", "Pond2" = "Pond1"))
+conn_nn1 <- inner_join(nn, conn, by = c("Pond1", "Pond2"))
+conn_nn2 <- inner_join(nn, conn, by = c("Pond1" = "Pond2", "Pond2" = "Pond1"))
 # combine datasets 
 conn_nn <- rbind(conn_nn1, conn_nn2)
 # save dataset 
 fwrite(conn_nn, "output/nearestneighbours/ConnectivityNearestNeigbour.csv")
 
 #### Average Distance & Resistance ####
-# calculate the average distance for the five closest neighbours of each pond 
-# and calculate the average resistance
+# calculate the average resistance and sd of resistance between ponds and their neighbours 
+# also tally the number of neighbours they have
 average <- conn_nn %>% 
   group_by(Pond1) %>%
-  dplyr::summarise(meandist = mean(dist), sddist = sd(dist), meanres = mean(Resistance), sdres = sd(Resistance))
+  dplyr::summarise(meanres = mean(Resistance), sdres = sd(Resistance), n = n())
 fwrite(average, "output/AverageResistance.csv")
 
 average <- rename(average, Pond = Pond1)
