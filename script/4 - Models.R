@@ -11,76 +11,67 @@ ani <- fread("output/AnisopteraResistance.csv")
 zyg <- fread("output/ZygopteraResistance.csv")
 source("script/function - diagnosticplots.R")
 
+#### Colinearity of Independent Variables ####
+ggplot(ani, aes(x = meanres, y = n))+
+  geom_point()+
+  geom_smooth(method = "lm")
+# mean resistance and number of neighbours are highly positively correlated, 
+# do not include number of neighbours as a variable
+
 #### Linear Models ####
 ## Abundance ##
 # Anisoptera 
 ani_abun_res <- lm(abundance ~ meanres + sdres, data = ani)
 summary(ani_abun_res)
+# significant
 
-ani_abun_dist <- lm(abundance ~ meandist + sddist, data=ani)
-summary(ani_abun_dist)
 
 # Zygoptera 
 zyg_abun_res <- lm(abundance ~ meanres + sdres, data = zyg)
 summary(zyg_abun_res)
-
-zyg_abun_dist <- lm(abundance ~ meandist + sddist, data=zyg)
-summary(zyg_abun_dist)
+# sd significant
 
 ## Shannon Diversity ## 
 # Anisoptera 
-ani_shann_res <- lm(shannon ~ meanres + sdres,data = ani)
+ani_shann_res <- lm(shannon ~ meanres + sdres, data = ani)
 summary(ani_shann_res)
-
-ani_shann_dist <- lm(shannon ~ meandist + sddist, data=ani)
-summary(ani_shann_dist)
+# almost significant
 
 # Zygoptera 
 zyg_shann_res <- lm(shannon ~ meanres + sdres, data = zyg)
 summary(zyg_shann_res)
-
-zyg_shann_dist <- lm(shannon ~ meandist + sddist, data=zyg)
-summary(zyg_shann_dist)
+# significant
 
 ## Simpson Diversity ##
 # Anisoptera 
 ani_simp_res <- lm(simpson ~ meanres + sdres, data = ani)
 summary(ani_simp_res)
-
-ani_simp_dist <- lm(simpson ~ meandist + sddist, data=ani)
-summary(ani_simp_dist)
+# significant
 
 # Zygoptera 
 zyg_simp_res <- lm(simpson ~ meanres + sdres, data = zyg)
 summary(zyg_simp_res)
 
-zyg_simp_dist <- lm(simpson ~ meandist + sddist, data=zyg)
-summary(zyg_simp_dist)
-
 ## Species Richness ##
 # Anisoptera 
 ani_sr_res <- lm(speciescount ~ meanres + sdres, data = ani)
 summary(ani_sr_res)
-
-ani_sr_dist <- lm(speciescount ~ meandist + sddist, data=ani)
-summary(ani_sr_dist)
+# significant
 
 # Zygoptera 
 zyg_sr_res <- lm(speciescount ~ meanres + sdres, data = zyg)
 summary(zyg_sr_res)
-
-zyg_sr_dist <- lm(speciescount ~ meandist + sddist, data=zyg)
-summary(zyg_sr_dist)
+# significant
 
 # list models with names
-normalmodels <- list("Ani Abundance ~ Resistance" = ani_abun_res, "Ani Abundance ~ Distance" = ani_abun_dist,  
-                     "Zyg Abundance ~ Resistance" = zyg_abun_res, "Zyg Abundance ~ Distance" = zyg_abun_dist, 
-                     "Ani Shannon ~ Resistance" = ani_shann_res, "Ani Shannon ~ Distance" = ani_shann_dist, 
-                     "Zyg Shannon ~ Resistance" = zyg_shann_res, "Zyg Shannon ~ Distance" = zyg_shann_dist, 
-                     "Ani Simp ~ Resistance" = ani_simp_res, "Ani Simp ~ Distance" = ani_simp_dist, 
-                     "Zyg Simp ~ Resistance" = zyg_simp_res, "Zyg Simp ~ Distance" = zyg_simp_dist,
-                     "Ani Species ~ Resistance" = ani_sr_res, "Ani Species ~ Distance" = ani_sr_dist, 
-                     "Zyg Species ~ Resistance" = zyg_sr_res, "Zyg Species ~ Distance" = zyg_sr_dist)
+normalmodels <- list("Ani Abundance ~ Resistance" = ani_abun_res, 
+                     "Zyg Abundance ~ Resistance" = zyg_abun_res, 
+                     "Ani Shannon ~ Resistance" = ani_shann_res, 
+                     "Zyg Shannon ~ Resistance" = zyg_shann_res,  
+                     "Ani Simp ~ Resistance" = ani_simp_res, 
+                     "Zyg Simp ~ Resistance" = zyg_simp_res, 
+                     "Ani Species ~ Resistance" = ani_sr_res,  
+                     "Zyg Species ~ Resistance" = zyg_sr_res)
 
 # make diagnostic plots for each model 
 normalmodels_residplots <- imap(normalmodels, resid_plots)
@@ -88,61 +79,19 @@ pdf("graphics/modeldiagnostics/normalmodels.pdf")
 normalmodels_residplots
 dev.off()
 
-# ani_abun_dist, zyg_abun_res, zyg_abun_dist, and Simpson diversity models don't meet assumptions
-# try these as Generalized Linear Models
-
-#### Generalized Linear Model ####
-# going to use a Gamma distribution
-ani_abun_dist_g <- glm(abundance ~ meandist + sddist, family = Gamma, data=ani)
-summary(ani_abun_dist_g)
-
-zyg_abun_res_g <- glm(abundance ~ meanres + sdres, family = Gamma, data = zyg)
-summary(zyg_abun_res_g)
-
-zyg_abun_dist_g <- glm(abundance ~ meandist + sddist, family = Gamma, data=zyg)
-summary(zyg_abun_dist_g)
-
-# row 3 of anisoptera has Simpson diversity value of zero, Gamma doesn't accept 
-# zero values, will switch it to 0.000001 so it is functionally acting as zero 
-# but still works with error structure
-ani$simpson[3] <- 0.0001
-
-ani_simp_res_g <- glm(simpson ~ meanres + sdres, family = Gamma, data = ani)
-summary(ani_simp_res_g)
-
-ani_simp_dist_g <- glm(simpson ~ meandist + sddist, family = Gamma, data=ani)
-summary(ani_simp_dist_g)
-
-zyg_simp_res_g <- glm(simpson ~ meanres + sdres, family = Gamma, data = zyg)
-summary(zyg_simp_res_g)
-
-zyg_simp_dist_g <- glm(simpson ~ meandist + sddist, family = Gamma, data=zyg)
-summary(zyg_simp_dist_g)
-
-# list models with names
-gammamodels <- list("Ani Abundance ~ Distance" = ani_abun_dist_g,  
-                     "Zyg Abundance ~ Resistance" = zyg_abun_res_g, "Zyg Abundance ~ Distance" = zyg_abun_dist_g, 
-                     "Ani Simp ~ Resistance" = ani_simp_res_g, "Ani Simp ~ Distance" = ani_simp_dist_g, 
-                     "Zyg Simp ~ Resistance" = zyg_simp_res_g, "Zyg Simp ~ Distance" = zyg_simp_dist_g)
-
-# make diagnostic plots for each model 
-gammamodels_residplots <- imap(gammamodels, resid_plots)
-pdf("graphics/modeldiagnostics/gammamodels.pdf")
-gammamodels_residplots
-dev.off()
-
-# all models look good except for Simpson diversity 
-# omit Simpson diversity from anaylsis. Unnecessary second 
+# model diagnostic plots look good except Simpson diversity models don't meet assumptions, 
+# omit Simpson diversity from analysis. Unnecessary second 
 # measure of biodiversity, was only included out of curiosity
 
-# only significant results are Anisoptera abundance ~ average pond resistance
-# mean resistance and sd both negatively associated with Anisoptera abundance
-# note that Anisoptera species richness ~ average pond resistance is close to 
-# significant (0.06)
+# significant results include Anisoptera abundance, Zygoptera abundance, 
+# Zygoptera species richness
 
-# write summary table 
-summ <- broom::tidy(ani_abun_res)
-write.csv(summ, "output/models/AnisopteraAbundanceResistance_Summary.csv")
+# write summary tables
+summ1 <- broom::tidy(ani_abun_res)
+write.csv(summ1, "output/models/AnisopteraAbundanceResistance_Summary.csv")
 
-summ2 <- broom::tidy(ani_sr_res)
-write.csv(summ2, "output/models/AnisopteraSpeciesRichnessResistance_Summary.csv")
+summ2 <- broom::tidy(zyg_abun_res)
+write.csv(summ2, "output/models/ZygopteraAbundanceResistance_Summary.csv")
+
+summ3 <- broom::tidy(zyg_sr_res)
+write.csv(summ3, "output/models/ZygopteraSpeciesRichnessResistance_summary.csv")
