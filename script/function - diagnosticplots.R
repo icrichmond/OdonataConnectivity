@@ -6,6 +6,7 @@
 # create a function to make the residual plots later on in the script 
 # code originally obtained and edited from github.com/aosmith and https://rstudio-pubs-static.s3.amazonaws.com/43190_f9bd428cf5b94562a1b46e00b454e05a.html
 resid_plots <- function(model, modelname){
+  library(broom)
   # augment is from broom package, it adds columns of residuals, predictions, etc.
   output <- augment(model)
   # first plot is a residual vs fitted plot
