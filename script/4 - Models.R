@@ -16,7 +16,7 @@ ggplot(ani, aes(x = meanres, y = n))+
   geom_point()+
   geom_smooth(method = "lm")
 # mean resistance and number of neighbours are highly positively correlated, 
-# do not include number of neighbours as a variable
+# use separate models for number of neighbours as habitat
 
 #### Linear Models ####
 ## Abundance ##
@@ -24,7 +24,6 @@ ggplot(ani, aes(x = meanres, y = n))+
 ani_abun_res <- lm(abundance ~ meanres + sdres, data = ani)
 summary(ani_abun_res)
 # significant
-
 
 # Zygoptera 
 zyg_abun_res <- lm(abundance ~ meanres + sdres, data = zyg)
@@ -41,16 +40,6 @@ summary(ani_shann_res)
 zyg_shann_res <- lm(shannon ~ meanres + sdres, data = zyg)
 summary(zyg_shann_res)
 # significant
-
-## Simpson Diversity ##
-# Anisoptera 
-ani_simp_res <- lm(simpson ~ meanres + sdres, data = ani)
-summary(ani_simp_res)
-# significant
-
-# Zygoptera 
-zyg_simp_res <- lm(simpson ~ meanres + sdres, data = zyg)
-summary(zyg_simp_res)
 
 ## Species Richness ##
 # Anisoptera 
@@ -79,9 +68,7 @@ pdf("graphics/modeldiagnostics/normalmodels.pdf")
 normalmodels_residplots
 dev.off()
 
-# model diagnostic plots look good except Simpson diversity models don't meet assumptions, 
-# omit Simpson diversity from analysis. Unnecessary second 
-# measure of biodiversity, was only included out of curiosity
+# model diagnostic plots look good
 
 # significant results include Anisoptera abundance, Zygoptera abundance, 
 # Zygoptera species richness
