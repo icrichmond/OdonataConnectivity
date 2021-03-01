@@ -8,16 +8,13 @@ easypackages::packages("tidyverse", "data.table", "ggpubr")
 
 #### Load Data ####
 conn <- fread("input/cleaned/ConnectivityCleaned.csv")
-nn <- fread("input/cleaned/NearestNeighbours.csv")
+nn <- fread("output/large/IntersectionsAllPonds.csv")
 ani <- fread("input/cleaned/AnisopteraCleaned.csv")
 zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
 
 #### Connectivity & Nearest Neighbours ####
 # we need to extract the connectivity values for each of the nearest neighbours 
-# melt the dataset so its in the same format as conn 
-colA = paste("which", c(1:6), sep = ".")
-colB = paste("dist", c(1:6), sep=".")
-nn_melt <- data.table::melt(nn, measure = list(colA, colB), value.name = c("which", "dist"))
+
 # rename columns so they match conn 
 nn_melt <- nn_melt %>%
   rename(Pond1 = Pond) %>%
