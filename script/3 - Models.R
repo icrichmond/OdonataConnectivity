@@ -9,19 +9,7 @@ easypackages::packages("tidyverse", "data.table")
 #### Load Data & Functions ####
 ani <- fread("input/cleaned/AnisopteraCleaned.csv")
 zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
-twokm <- readRDS("input/cleaned/BufferStats2km.rds")
-threehm <- readRDS("input/cleaned/BufferStats300m.rds")
 source("script/function - diagnosticplots.R")
-# combine buffer and odonate data 
-twokm <- rename(twokm, Pond = PondName)
-threehm <- rename(threehm, Pond = PondName)
-ani <- inner_join(ani, twokm, by = "Pond")
-ani <- inner_join(ani, threehm, by = "Pond", suffix = c(".two", ".threeh"))
-zyg <- inner_join(zyg, twokm, by = "Pond")
-zyg <- inner_join(zyg, threehm, by = "Pond",  suffix = c(".two", ".threeh"))
-
-write.csv(ani, "output/AnistopteraFull.csv")
-write.csv(zyg, "output/ZygopteraFull.csv")
 
 #### Linear Models ####
 # Use values from the 2 km buffer for Anisoptera, biologically relevant for them 
