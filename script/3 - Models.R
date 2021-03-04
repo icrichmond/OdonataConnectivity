@@ -1,28 +1,35 @@
 # Regressions 
 # Author: Isabella Richmond
-# This code is for testing the relationships between resistance and distance
-# to nearest neighbours and Odonata communities 
+# This code is for testing the relationships between surrounding resistance and 
+# Odonata communities 
 
 #### Load Packages ####
 easypackages::packages("tidyverse", "data.table")
 
 #### Load Data & Functions ####
-ani <- fread("output/AnisopteraResistance.csv")
-zyg <- fread("output/ZygopteraResistance.csv")
+ani <- fread("input/cleaned/AnisopteraCleaned.csv")
+zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
+twokm <- readRDS("input/cleaned/BufferStats2km.rds")
+threehm <- readRDS("input/cleaned/BufferStats300m.rds")
 source("script/function - diagnosticplots.R")
+# combine buffer and odonate data 
+twokm <- rename(twokm, Pond = PondName)
+threehm <- rename(threehm, Pond = PondName)
+ani <- inner_join(ani, twokm, by = "Pond")
+ani <- inner_join(ani, threehm, by = "Pond", suffix = c(".two", ".threeh"))
+zyg <- inner_join(zyg, twokm, by = "Pond")
+zyg <- inner_join(zyg, threehm, by = "Pond",  suffix = c(".two", ".threeh"))
 
-#### Colinearity of Independent Variables ####
-ggplot(ani, aes(x = meanres, y = n))+
-  geom_point()+
-  geom_smooth(method = "lm")
-# mean resistance and number of neighbours are highly positively correlated, 
-# use separate models for number of neighbours as habitat
+write.csv(ani, "output/AnistopteraFull.csv")
+write.csv(zyg, "output/ZygopteraFull.csv")
 
 #### Linear Models ####
+# Use values from the 2 km buffer for Anisoptera, biologically relevant for them 
+# Use values from the 300 m buffer for Zygoptera, biologically relevant for them
 ## Abundance ##
 # Anisoptera 
-ani_abun_res <- lm(abundance ~ meanres + sdres, data = ani)
-summary(ani_abun_res)
+ani_abun <- lm(abundance ~ mean.two,  data = ani)
+summary(ani_abun)
 # significant
 
 ani_abun_hab <- lm(abundance ~ n , data = ani)

@@ -7,25 +7,23 @@ easypackages::packages("tidyverse", "data.table", "ggpubr", "patchwork")
 
 
 #### Load Data ####
-ani <- fread("output/AnisopteraResistance.csv")
-zyg <- fread("output/ZygopteraResistance.csv")
-ponds <- fread("output/AverageResistance.csv")
+ani <- fread("output/AnisopteraFull.csv")
+zyg <- fread("output/ZygopteraFull.csv")
+twokm <- fread("input/cleaned/BufferStats2km.csv")
+threehm <- fread("input/cleaned/BufferStats300m.csv")
 # add groups to differentiate between natural and stormwater ponds 
-ani <- add_column(ani, Group = "SWF")
-ani$Group[42:49] = "NAT"
+twokm <- add_column(twokm, Group = "SWF")
+twokm$Group[42:49] = "NAT"
 
-zyg <- add_column(zyg, Group = "SWF")
-zyg$Group[42:49] = "NAT"
-
-ponds <- add_column(ponds, Group = "SWF")
-ponds$Group[1:8] = "NAT"
+threehm <- add_column(threehm, Group = "SWF")
+threehm$Group[42:49] = "NAT"
 
 #### Figure 1 - Anisoptera Abundance Regressions ####
-mean <- ggplot(ani, aes(meanres, abundance, shape=Group))+
+mean <- ggplot(ani, aes(median.x, abundance, shape=Group))+
   geom_point(aes(group = Group), size = 2)+
   geom_smooth(aes(group=1),method="lm",se=FALSE,col="black")+
-  stat_cor(aes(meanres,abundance,label = paste(..p.label..), group=1), label.y = 290, label.x = 0.09)+
-  stat_regline_equation(aes(meanres,abundance, group=1), label.y = 310, label.x = 0.09)+
+  stat_cor(aes(median.x,abundance,label = paste(..p.label..), group=1), label.y = 290, label.x = -0.25)+
+  stat_regline_equation(aes(median.x,abundance, group=1), label.y = 310, label.x = -0.25)+
   theme_classic() +
   xlab("Mean Resistance") +
   ylab("Anisoptera Abundance")+
@@ -34,8 +32,8 @@ mean <- ggplot(ani, aes(meanres, abundance, shape=Group))+
 sd <- ggplot(ani, aes(sdres, abundance, shape=Group))+
   geom_point(aes(group = Group), size = 2)+
   geom_smooth(aes(group=1),method="lm",se=FALSE,col="black")+
-  stat_cor(aes(sdres,abundance,label = paste(..p.label..), group=1), label.y = 280, label.x = 0.07)+
-  stat_regline_equation(aes(sdres,abundance, group=1), label.y = 300, label.x = 0.07)+
+  stat_cor(aes(sdres,abundance,label = paste(..p.label..), group=1), label.y = 280, label.x = -0.24)+
+  stat_regline_equation(aes(sdres,abundance, group=1), label.y = 300, label.x = 0.0)+
   theme_classic() +
   xlab("Standard Deviation Resistance") +
   ylab("Anisoptera Abundance")+
@@ -62,12 +60,12 @@ meltponds <- melt(meltponds, id.vars = "Group")
 
 levels(meltponds$variable) <- c("Mean Resistance", "Standard Deviation Resistance","Number of Neighbours")
 
-ggboxplot(meltponds, x = "Group", y = "value", add = "jitter")+
+ggboxplot(twokm, x = "Group", y = "mean", add = "jitter")+
   theme_classic()+
   theme(strip.background = element_rect(colour = "black", fill = "grey"))+
   scale_x_discrete(labels = c("NAT" = "Natural", "SWF" = "Stormwater"))+
   xlab("Pond Type")+
   ylab("")+
   stat_compare_means(method = "t.test")+
-  facet_wrap(~ variable)
+  #facet_wrap(~ variable)
 ggsave("graphics/PondComparisons.jpg", dpi = 400)
