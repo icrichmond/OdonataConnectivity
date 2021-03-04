@@ -7,8 +7,8 @@ easypackages::packages("tidyverse", "data.table", "ggpubr", "patchwork")
 
 
 #### Load Data ####
-ani <- fread("output/AnisopteraFull.csv")
-zyg <- fread("output/ZygopteraFull.csv")
+ani <- fread("input/cleaned/AnisopteraCleaned.csv")
+zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
 twokm <- fread("input/cleaned/BufferStats2km.csv")
 threehm <- fread("input/cleaned/BufferStats300m.csv")
 # add groups to differentiate between natural and stormwater ponds 
