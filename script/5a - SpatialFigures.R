@@ -21,6 +21,7 @@ wgs84 <- st_crs('EPSG:4326')
 ponds <- st_transform(ponds, wgs84)
 
 #### Study Site Figure ####
+# greyscale
 ss <- tm_shape(current)+
   tm_raster(palette = "Greys", midpoint = NA, style = "cont", title = "Current") +
 tm_grid()+
@@ -30,3 +31,13 @@ tm_shape(ponds)+
 tm_layout(legend.position = c("left", "bottom"), legend.bg.color = "white")
 
 tmap_save(ss, "graphics/currentmap.png", dpi = 450)
+
+sscol <- tm_shape(current)+
+  tm_raster(palette = "-YlOrRd", midpoint = NA, style = "cont", title = "Current") +
+  tm_grid()+
+  tm_shape(ponds)+
+  tm_dots(size = 0.12, shape = "Group", shapes = c(21, 24), col = "black",
+          title.shape = "Pond Type", shapes.labels = c("Natural", "Stormwater"))+
+  tm_layout(legend.position = c("left", "bottom"), legend.bg.color = "white")
+
+tmap_save(sscol, "graphics/currentmapcolour.png", dpi = 450)
