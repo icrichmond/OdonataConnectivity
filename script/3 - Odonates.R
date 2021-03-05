@@ -9,6 +9,7 @@ easypackages::packages("tidyverse", "data.table", "vegan")
 ode <- fread("input/AdultOdonata.csv")
 twokm <- readRDS("input/cleaned/BufferStats2km.rds")
 threehm <- readRDS("input/cleaned/BufferStats300m.rds")
+habitats <- fread("input/cleaned/HabitatNumbers.csv")
 
 #### Clean Odonate Data ####
 # remove NAT-4 and NAT-5 to match spatial data
@@ -53,6 +54,10 @@ ani <- inner_join(ani, twokm, by = "Pond")
 ani <- inner_join(ani, threehm, by = "Pond", suffix = c(".two", ".threeh"))
 zyg <- inner_join(zyg, twokm, by = "Pond")
 zyg <- inner_join(zyg, threehm, by = "Pond",  suffix = c(".two", ".threeh"))
+
+# add habitat data to odonate/buffer data
+ani <- inner_join(ani, habitats, by = "Pond")
+zyg <- inner_join(zyg, habitats, by = "Pond")
 
 # save cleaned datasets
 fwrite(ani, "input/cleaned/AnisopteraCleaned.csv")
