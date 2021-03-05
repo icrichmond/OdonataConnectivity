@@ -3,41 +3,36 @@
 # This script is for producing figures for the manuscript 
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "data.table", "ggpubr", "patchwork")
+easypackages::packages("tidyverse", "data.table", "ggpubr", "patchwork", "tmap")
 
 
 #### Load Data ####
 ani <- fread("input/cleaned/AnisopteraCleaned.csv")
 zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
-twokm <- fread("input/cleaned/BufferStats2km.csv")
-threehm <- fread("input/cleaned/BufferStats300m.csv")
-# add groups to differentiate between natural and stormwater ponds 
-twokm <- add_column(twokm, Group = "SWF")
-twokm$Group[42:49] = "NAT"
-
-threehm <- add_column(threehm, Group = "SWF")
-threehm$Group[42:49] = "NAT"
+twokm <- readRDS("input/cleaned/BufferStats2km.rds")
+threehm <- readRDS("input/cleaned/BufferStats300m.rds")
+habitats <- fread("input/cleaned/HabitatNumbers.csv")
+# join all buffer/habitat data 
+twokm <- as_tibble(twokm)
+threehm <- as_tibble(threehm)
+buffers <- inner_join(twokm, threehm, by = "PondName", suffix = c(".two", ".threeh"))
+habitats <- rename(habitats, PondName = Pond)
+buffers <- inner_join(buffers, habitats, by = "PondName")
+# assign SWF and NAT identifiers
+buffers <- add_column(buffers, Group = "SWF")
+buffers$Group[42:49] = "NAT"
 
 #### Figure 1 - Anisoptera Abundance Regressions ####
-mean <- ggplot(ani, aes(median.x, abundance, shape=Group))+
+mean <- ggplot(ani, aes(mean.two, abundance, shape=Group))+
   geom_point(aes(group = Group), size = 2)+
   geom_smooth(aes(group=1),method="lm",se=FALSE,col="black")+
-  stat_cor(aes(median.x,abundance,label = paste(..p.label..), group=1), label.y = 290, label.x = -0.25)+
-  stat_regline_equation(aes(median.x,abundance, group=1), label.y = 310, label.x = -0.25)+
+  stat_cor(aes(mean.two,abundance,label = paste(..p.label..), group=1), label.y = 290, label.x = -0.23)+
+  stat_regline_equation(aes(mean.two,abundance, group=1), label.y = 310, label.x = -0.23)+
   theme_classic() +
-  xlab("Mean Resistance") +
+  xlab("Mean Current") +
   ylab("Anisoptera Abundance")+
   scale_shape_discrete(name = "Pond Type", labels = c("Natural", "Stormwater"))
 
-sd <- ggplot(ani, aes(sdres, abundance, shape=Group))+
-  geom_point(aes(group = Group), size = 2)+
-  geom_smooth(aes(group=1),method="lm",se=FALSE,col="black")+
-  stat_cor(aes(sdres,abundance,label = paste(..p.label..), group=1), label.y = 280, label.x = -0.24)+
-  stat_regline_equation(aes(sdres,abundance, group=1), label.y = 300, label.x = 0.0)+
-  theme_classic() +
-  xlab("Standard Deviation Resistance") +
-  ylab("Anisoptera Abundance")+
-  scale_shape_discrete(name = "Pond Type", labels = c("Natural", "Stormwater"))
 
 (mean / sd) + plot_layout(guides = "collect")
 ggsave("graphics/AnisopteraAbundanceRegression.jpg", dpi = 400)
