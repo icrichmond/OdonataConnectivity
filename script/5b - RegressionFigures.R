@@ -1,66 +1,106 @@
-# Manuscript Figures 
+# Regression Figures
 # Author: Isabella Richmond 
-# This script is for producing figures for the manuscript 
+# This script is for producing figures demonstrating the 
+# relationships between current and Odonates
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "data.table", "ggpubr", "patchwork", "tmap")
-
+easypackages::packages("tidyverse", "data.table", "ggpubr")
 
 #### Load Data ####
 ani <- fread("input/cleaned/AnisopteraCleaned.csv")
 zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
-twokm <- readRDS("input/cleaned/BufferStats2km.rds")
-threehm <- readRDS("input/cleaned/BufferStats300m.rds")
-habitats <- fread("input/cleaned/HabitatNumbers.csv")
-# join all buffer/habitat data 
-twokm <- as_tibble(twokm)
-threehm <- as_tibble(threehm)
-buffers <- inner_join(twokm, threehm, by = "PondName", suffix = c(".two", ".threeh"))
-habitats <- rename(habitats, PondName = Pond)
-buffers <- inner_join(buffers, habitats, by = "PondName")
-# assign SWF and NAT identifiers
-buffers <- add_column(buffers, Group = "SWF")
-buffers$Group[42:49] = "NAT"
 
-#### Figure 1 - Anisoptera Abundance Regressions ####
-mean <- ggplot(ani, aes(mean.two, abundance, shape=Group))+
-  geom_point(aes(group = Group), size = 2)+
-  geom_smooth(aes(group=1),method="lm",se=FALSE,col="black")+
-  stat_cor(aes(mean.two,abundance,label = paste(..p.label..), group=1), label.y = 290, label.x = -0.23)+
-  stat_regline_equation(aes(mean.two,abundance, group=1), label.y = 310, label.x = -0.23)+
+# select the relevant columns 
+anis <- select(ani, c(Pond, abundance, speciescount, shannon, Group, mean.two, sd.two, n.two))
+zygs <- select(zyg, c(Pond, abundance, speciescount, shannon, Group, mean.threeh, sd.threeh, n.threeh))
+
+#### Figure 1 - Anisoptera Regressions ####
+am <- ggplot(anis, aes(x = mean.two, y = abundance))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(x = mean.two,y = abundance,label = paste(..p.label..), group=1), label.y = 295, label.x = -1, size = 5)+
+  stat_regline_equation(aes(x = mean.two,y = abundance), label.y = 310, label.x = -1, size = 5)+
   theme_classic() +
+  theme(text = element_text(size = 20))+
   xlab("Mean Current") +
-  ylab("Anisoptera Abundance")+
-  scale_shape_discrete(name = "Pond Type", labels = c("Natural", "Stormwater"))
+  ylab("Anisoptera Abundance")
+
+asd <- ggplot(anis, aes(x= sd.two, y = abundance))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(x = sd.two,y = abundance,label = paste(..p.label..)), label.y = 290, label.x = 0, size = 5)+
+  stat_regline_equation(aes(x = sd.two, y = abundance), label.y = 310, label.x = 0, size = 5)+
+  theme_classic() +
+  theme(text = element_text(size = 20))+
+  xlab("Standard Deviation Current") +
+  ylab("Anisoptera Abundance")
+
+ah <- ggplot(anis, aes(n.two, abundance))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(n.two,abundance,label = paste(..p.label..)), label.y = 290, label.x = 0.45, size = 5)+
+  stat_regline_equation(aes(n.two,abundance), label.y = 310, label.x = 0.45, size = 5)+
+  theme_classic() +
+  theme(text = element_text(size = 20))+
+  xlab("Number of Surrounding Habitats") +
+  ylab("Anisoptera Abundance")
+
+as <- ggplot(anis, aes(mean.two, shannon))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(mean.two,shannon,label = paste(..p.label..), group=1), label.y = 2, label.x = -0.35, size = 5)+
+  stat_regline_equation(aes(mean.two,shannon), label.y = 2.1, label.x = -0.35, size = 5)+
+  theme_classic() +
+  theme(text = element_text(size = 20))+
+  xlab("Mean Current") +
+  ylab("Anisoptera Shannon Diversity")
+
+srm <- ggplot(anis, aes(mean.two, speciescount))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(mean.two,speciescount,label = paste(..p.label..), group=1), label.y = 12.5, label.x = -0.9, size = 5)+
+  stat_regline_equation(aes(mean.two,speciescount), label.y = 13, label.x = -0.9, size = 5)+
+  theme_classic() +
+  theme(text = element_text(size = 20))+
+  xlab("Mean Current") +
+  ylab("Anisoptera Species Richness")
+
+srh <- ggplot(anis, aes(n.two, speciescount))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(n.two,speciescount,label = paste(..p.label..), group=1), label.y = 12.5, label.x = 0.4, size = 5)+
+  stat_regline_equation(aes(n.two,speciescount), label.y = 13, label.x = 0.4, size = 5)+
+  theme_classic() +
+  theme(text = element_text(size = 20))+
+  xlab("Number of Surrounding Habitats") +
+  ylab("Anisoptera Species Richness")
 
 
-(mean / sd) + plot_layout(guides = "collect")
-ggsave("graphics/AnisopteraAbundanceRegression.jpg", dpi = 400)
+ggarrange(am, ah, srm, srh, ncol = 2, nrow = 2, labels = "auto", font.label = list(size = 20))
+
+ggsave("graphics/AnisopteraRegression.jpg", width = 15, height = 12, dpi = 400)
 
 #### Figure 2 - Anisoptera Species Richness Regressions ####
-ggplot(ani, aes(meanres, speciescount, shape=Group))+
-  geom_point(aes(group = Group), size = 2)+
-  geom_smooth(aes(group=1),method="lm",se=FALSE,col="black")+
-  stat_cor(aes(meanres,speciescount,label = paste(..p.label..), group=1), label.y = 11, label.x = 48)+
-  stat_regline_equation(aes(meanres,speciescount, group=1), label.y = 12, label.x = 48)+
+zsm <- ggplot(zygs, aes(mean.threeh, shannon))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(mean.threeh,shannon,label = paste(..p.label..), group=1), label.y = 1.85, label.x = -0.35, size = 5)+
+  stat_regline_equation(aes(mean.threeh,shannon), label.y = 2, label.x = -0.35, size = 5)+
   theme_classic() +
-  xlab("Mean Resistance") +
-  ylab("Anisoptera Species Richness")+
-  scale_shape_discrete(name = "Pond Type", labels = c("Natural", "Stormwater"))
-ggsave("graphics/AnisopteraSpeciesRichnessRegression.jpg", dpi=400)
+  theme(text = element_text(size = 20))+
+  xlab("Mean Current") +
+  ylab("Zygoptera Shannon Diversity")
 
-#### Figure 3 - Boxplot ####
-meltponds <- select(ponds, -Pond1)
-meltponds <- melt(meltponds, id.vars = "Group")
+zsrm <- ggplot(zygs, aes(mean.threeh, speciescount))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(mean.threeh,speciescount,label = paste(..p.label..), group=1), label.y = 11.5, label.x = -0.35, size = 5)+
+  stat_regline_equation(aes(mean.threeh,speciescount), label.y = 12, label.x = -0.35, size = 5)+
+  theme_classic() +
+  theme(text = element_text(size = 20))+
+  xlab("Mean Current") +
+  ylab("Zygoptera Species Richness")
 
-levels(meltponds$variable) <- c("Mean Resistance", "Standard Deviation Resistance","Number of Neighbours")
+ggarrange(zsm, zsrm, ncol = 1, nrow = 2, labels = "auto", font.label = list(size = 20))
 
-ggboxplot(twokm, x = "Group", y = "mean", add = "jitter")+
-  theme_classic()+
-  theme(strip.background = element_rect(colour = "black", fill = "grey"))+
-  scale_x_discrete(labels = c("NAT" = "Natural", "SWF" = "Stormwater"))+
-  xlab("Pond Type")+
-  ylab("")+
-  stat_compare_means(method = "t.test")+
-  #facet_wrap(~ variable)
-ggsave("graphics/PondComparisons.jpg", dpi = 400)
+ggsave("graphics/ZygopteraRegression.jpg", width = 12, height = 10, dpi = 400)
