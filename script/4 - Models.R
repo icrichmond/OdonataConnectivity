@@ -11,6 +11,35 @@ ani <- fread("input/cleaned/AnisopteraCleaned.csv")
 zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
 source("script/function - diagnosticplots.R")
 
+#### Correlations ####
+# check correlations between mean/sd and mean/hab 
+ggplot(ani, aes(x = n.two, y = mean.two)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  stat_cor()
+# highly correlated
+
+ggplot(ani, aes(x = n.threeh, y = mean.threeh)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  stat_cor()
+# correlation of 0.63, fairly correlated 
+
+ggplot(ani, aes(x = mean.two, y = sd.two)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  stat_cor()
+# correlation of 0.5, OK
+
+ggplot(zyg, aes(x = mean.threeh, y = sd.threeh)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  stat_cor()
+# correlation of 0.38, fairly correlated 
+
+# number of surrounding habitats and mean conductance are 
+# highly correlated
+
 #### Linear Models ####
 # Use values from the 2 km buffer for Anisoptera, biologically relevant 
 # Use values from the 300 m buffer for Zygoptera, biologically relevant
@@ -116,3 +145,7 @@ write.csv(summ6, "output/models/ZygopteraRichnessCurrent_Summary.csv")
 
 summ7 <- broom::tidy(ani_shann)
 write.csv(summ7, "output/models/ZygopteraShannonCurrent_Summary.csv")
+
+# IMPORTANT: sd seems to be a dummy variable - switches direction and magnitude 
+# of effect depending on what else is in the model, do not use in paper. Can't 
+# be confident of effects
