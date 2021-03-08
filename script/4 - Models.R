@@ -46,7 +46,7 @@ ggplot(zyg, aes(x = mean.threeh, y = sd.threeh)) +
 
 ## Anisoptera ##
 # Abundance
-ani_abun <- lm(abundance ~  mean.two + sd.two,  data = ani)
+ani_abun <- lm(abundance ~  mean.two,  data = ani)
 summary(ani_abun)
 # significant
 
@@ -55,7 +55,7 @@ summary(ani_abun_hab)
 # significant
 
 # Shannon Diversity 
-ani_shann <- lm(shannon ~ mean.two + sd.two, data = ani)
+ani_shann <- lm(shannon ~ mean.two, data = ani)
 summary(ani_shann)
 # almost significant
 ani_shann_hab <- lm(shannon ~ n.two, data = ani)
@@ -63,7 +63,7 @@ summary(ani_shann_hab)
 # not significant 
 
 # Species Richness
-ani_sr <- lm(speciescount ~ mean.two + sd.two, data = ani)
+ani_sr <- lm(speciescount ~ mean.two, data = ani)
 summary(ani_sr)
 # mean significant
 ani_sr_hab <- lm(speciescount ~ n.two, data = ani)
@@ -71,8 +71,8 @@ summary(ani_sr_hab)
 # significant
 
 # list models with names
-normalmodels_ani <- list("Ani Abundance ~ Current" = ani_abun, "Ani Abundance ~ Habitat" = ani_abun_hab,
-                         "Ani Shannon ~ Current" = ani_shann, "Ani Shannon ~ Habitat" = ani_shann_hab,
+normalmodels_ani <- list("Ani Abundance ~ Current" = ani_abun, "Ani Abundance ~ Habitat" = ani_abun_hab, 
+                         "Ani Shannon ~ Current" = ani_shann, "Ani Shannon ~ Habitat" = ani_shann_hab, 
                          "Ani Sp. Rich. ~ Current" = ani_sr, "Ani Sp. Rich ~ Habitat" = ani_sr_hab)
 
 # make diagnostic plots for each model 
@@ -101,7 +101,7 @@ write.csv(summ5, "output/models/AnisopteraShannonHabitat_Summary.csv")
 
 ## Zygoptera ##
 # Abundance
-zyg_abun <- lm(abundance ~ mean.threeh + sd.threeh, data = zyg)
+zyg_abun <- lm(abundance ~ mean.threeh, data = zyg)
 summary(zyg_abun)
 # not significant
 
@@ -110,7 +110,7 @@ summary(zyg_abun_hab)
 # not significant
 
 # Shannon Diversity 
-zyg_shann <- lm(shannon ~ mean.threeh + sd.threeh, data = zyg)
+zyg_shann <- lm(shannon ~ mean.threeh, data = zyg)
 summary(zyg_shann)
 # almost significant (0.08)
 
@@ -119,7 +119,7 @@ summary(zyg_shann_hab)
 # not significant
 
 # Species Richness
-zyg_sr <- lm(speciescount ~ mean.threeh + sd.threeh, data = zyg)
+zyg_sr <- lm(speciescount ~ mean.threeh, data = zyg)
 summary(zyg_sr)
 # mean significant
 
@@ -147,5 +147,5 @@ summ7 <- broom::tidy(ani_shann)
 write.csv(summ7, "output/models/ZygopteraShannonCurrent_Summary.csv")
 
 # IMPORTANT: sd seems to be a dummy variable - switches direction and magnitude 
-# of effect depending on what else is in the model, do not use in paper. Can't 
+# of effect depending on what else is in the model, do not include in models. Can't 
 # be confident of effects
