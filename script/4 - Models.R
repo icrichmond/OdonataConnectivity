@@ -4,7 +4,7 @@
 # Odonata communities 
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "data.table")
+easypackages::packages("tidyverse", "data.table", "ggpubr")
 
 #### Load Data & Functions ####
 ani <- fread("input/cleaned/AnisopteraCleaned.csv")
@@ -87,17 +87,14 @@ dev.off()
 summ1 <- broom::tidy(ani_abun)
 write.csv(summ1, "output/models/AnisopteraAbundanceCurrent_Summary.csv")
 
-summ2 <- broom::tidy(ani_shann)
-write.csv(summ2, "output/models/AnisopteraShannonCurrent_Summary.csv")
+summ2 <- broom::tidy(ani_sr)
+write.csv(summ2, "output/models/AnisopteraRichnessCurrent_summary.csv")
 
-summ3 <- broom::tidy(ani_sr)
-write.csv(summ3, "output/models/AnisopteraRichnessCurrent_summary.csv")
+summ3 <- broom::tidy(ani_abun_hab)
+write.csv(summ3, "output/models/AnisopteraAbundanceHabitat_Summary.csv")
 
-summ4 <- broom::tidy(ani_abun_hab)
-write.csv(summ4, "output/models/AnisopteraAbundanceHabitat_Summary.csv")
-
-summ5 <- broom::tidy(ani_sr_hab)
-write.csv(summ5, "output/models/AnisopteraShannonHabitat_Summary.csv")
+summ4 <- broom::tidy(ani_sr_hab)
+write.csv(summ4, "output/models/AnisopteraSpeciesRichnessHabitat_Summary.csv")
 
 ## Zygoptera ##
 # Abundance
