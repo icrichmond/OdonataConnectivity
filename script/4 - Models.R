@@ -140,7 +140,7 @@ dev.off()
 summ6 <- broom::tidy(zyg_sr)
 write.csv(summ6, "output/models/ZygopteraRichnessCurrent_Summary.csv")
 
-summ7 <- broom::tidy(ani_shann)
+summ7 <- broom::tidy(zyg_shann)
 write.csv(summ7, "output/models/ZygopteraShannonCurrent_Summary.csv")
 
 # IMPORTANT: sd seems to be a dummy variable - switches direction and magnitude 
