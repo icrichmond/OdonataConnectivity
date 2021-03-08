@@ -3,7 +3,7 @@
 # This script is for producing figures for the manuscript 
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "ggpubr", "sf")
+easypackages::packages("tidyverse", "ggpubr", "sf", "data.table")
 
 #### Load Data ####
 twokm <- readRDS("input/cleaned/BufferStats2km.rds")
