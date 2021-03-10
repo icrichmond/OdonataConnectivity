@@ -18,7 +18,7 @@ zygs <- select(zyg, c(Pond, abundance, speciescount, shannon, Group, mean.threeh
 am <- ggplot(anis, aes(x = mean.two, y = abundance))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(x = mean.two,y = abundance,label = paste(..p.label..), group=1), label.y = 295, label.x = -1, size = 5)+
+  stat_cor(aes(x = mean.two,y = abundance,label = paste(..rr.label..), group=1), label.y = 295, label.x = -1, size = 5)+
   stat_regline_equation(aes(x = mean.two,y = abundance), label.y = 310, label.x = -1, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
@@ -28,7 +28,7 @@ am <- ggplot(anis, aes(x = mean.two, y = abundance))+
 asd <- ggplot(anis, aes(x= sd.two, y = abundance))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(x = sd.two,y = abundance,label = paste(..p.label..)), label.y = 290, label.x = 0, size = 5)+
+  stat_cor(aes(x = sd.two,y = abundance,label = paste(..rr.label..)), label.y = 290, label.x = 0, size = 5)+
   stat_regline_equation(aes(x = sd.two, y = abundance), label.y = 310, label.x = 0, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
@@ -38,7 +38,7 @@ asd <- ggplot(anis, aes(x= sd.two, y = abundance))+
 ah <- ggplot(anis, aes(n.two, abundance))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(n.two,abundance,label = paste(..p.label..)), label.y = 290, label.x = 0.45, size = 5)+
+  stat_cor(aes(n.two,abundance,label = paste(..rr.label..)), label.y = 290, label.x = 0.45, size = 5)+
   stat_regline_equation(aes(n.two,abundance), label.y = 310, label.x = 0.45, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
@@ -48,7 +48,7 @@ ah <- ggplot(anis, aes(n.two, abundance))+
 as <- ggplot(anis, aes(mean.two, shannon))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(mean.two,shannon,label = paste(..p.label..), group=1), label.y = 2, label.x = -0.35, size = 5)+
+  stat_cor(aes(mean.two,shannon,label = paste(..rr.label..), group=1), label.y = 2, label.x = -0.35, size = 5)+
   stat_regline_equation(aes(mean.two,shannon), label.y = 2.1, label.x = -0.35, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
@@ -58,7 +58,7 @@ as <- ggplot(anis, aes(mean.two, shannon))+
 srm <- ggplot(anis, aes(mean.two, speciescount))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(mean.two,speciescount,label = paste(..p.label..), group=1), label.y = 12.5, label.x = -0.9, size = 5)+
+  stat_cor(aes(mean.two,speciescount,label = paste(..rr.label..), group=1), label.y = 12.5, label.x = -0.9, size = 5)+
   stat_regline_equation(aes(mean.two,speciescount), label.y = 13, label.x = -0.9, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
@@ -68,7 +68,7 @@ srm <- ggplot(anis, aes(mean.two, speciescount))+
 srh <- ggplot(anis, aes(n.two, speciescount))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(n.two,speciescount,label = paste(..p.label..), group=1), label.y = 12.5, label.x = 0.4, size = 5)+
+  stat_cor(aes(n.two,speciescount,label = paste(..rr.label..), group=1), label.y = 12.5, label.x = 0.4, size = 5)+
   stat_regline_equation(aes(n.two,speciescount), label.y = 13, label.x = 0.4, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
@@ -81,26 +81,47 @@ ggarrange(am, ah, srm, srh, ncol = 2, nrow = 2, labels = "auto", font.label = li
 ggsave("graphics/AnisopteraRegression.jpg", width = 15, height = 12, dpi = 400)
 
 #### Figure 2 - Anisoptera Species Richness Regressions ####
-zsm <- ggplot(zygs, aes(mean.threeh, shannon))+
+zsdc <- ggplot(zygs, aes(x = mean.threeh, y = shannon))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(mean.threeh,shannon,label = paste(..p.label..), group=1), label.y = 1.85, label.x = -0.35, size = 5)+
-  stat_regline_equation(aes(mean.threeh,shannon), label.y = 2, label.x = -0.35, size = 5)+
+  stat_cor(aes(label = paste(..rr.label..), group=1), label.y = 1.8, label.x = -0.3, size = 5)+
+  stat_regline_equation(label.y = 1.9, label.x = -0.3, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Mean Current") +
   ylab("Zygoptera Shannon Diversity")
 
-zsrm <- ggplot(zygs, aes(mean.threeh, speciescount))+
+zsdh <- ggplot(zygs, aes(x= n.threeh, y = shannon))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(mean.threeh,speciescount,label = paste(..p.label..), group=1), label.y = 11.5, label.x = -0.35, size = 5)+
-  stat_regline_equation(aes(mean.threeh,speciescount), label.y = 12, label.x = -0.35, size = 5)+
+  stat_cor(aes(label = paste(..rr.label..)), label.y = 1.8, label.x = 16, size = 5)+
+  stat_regline_equation(label.y = 1.9, label.x = 16, size = 5)+
+  theme_classic() +
+  theme(text = element_text(size = 20))+
+  xlab("Number of Surrounding Habitats") +
+  ylab("Zygoptera Shannon Diversity")
+
+zsrc <- ggplot(zygs, aes(mean.threeh, speciescount))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(label = paste(..rr.label..)), label.y = 10.5, label.x = -0.3, size = 5)+
+  stat_regline_equation(label.y = 11, label.x = -0.3, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Mean Current") +
   ylab("Zygoptera Species Richness")
 
-ggarrange(zsm, zsrm, ncol = 1, nrow = 2, labels = "auto", font.label = list(size = 20))
+zsrh <- ggplot(zygs, aes(n.threeh, speciescount))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE,col="black")+
+  stat_cor(aes(label = paste(..rr.label..), group=1), label.y = 10.5, label.x = 16, size = 5)+
+  stat_regline_equation(label.y = 11, label.x = 16, size = 5)+
+  theme_classic() +
+  theme(text = element_text(size = 20))+
+  xlab("Number of Surrounding Habitats") +
+  ylab("Zygoptera Species Richness")
 
-ggsave("graphics/ZygopteraRegression.jpg", width = 12, height = 10, dpi = 400)
+
+ggarrange(zsdc, zsdh, zsrc, zsrh, ncol = 2, nrow = 2, labels = "auto", font.label = list(size = 20))
+
+ggsave("graphics/ZygopteraRegression.jpg", width = 15, height = 12, dpi = 400)
