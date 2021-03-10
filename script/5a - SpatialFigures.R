@@ -3,7 +3,7 @@
 # This script is for producing spatial figures for this manuscript
 
 #### Load Packages ####
-easypackages::packages("raster", "sf", "tmap")
+easypackages::packages("raster", "sf", "tmap", "tidyverse")
 
 #### Load Data ####
 current <- raster("input/CurrentMap.txt")
@@ -23,7 +23,7 @@ ponds <- st_transform(ponds, wgs84)
 #### Study Site Figure ####
 # greyscale
 ss <- tm_shape(current)+
-  tm_raster(palette = "Greys", midpoint = NA, style = "cont", title = "Current") +
+  tm_raster(palette = "Greys", midpoint = NA, style = "cont", title = "Current", legend.reverse = T) +
 tm_grid()+
 tm_shape(ponds)+
   tm_dots(size = 0.12, shape = "Group", shapes = c(21, 24), col = "black",
@@ -33,7 +33,7 @@ tm_layout(legend.position = c("left", "bottom"), legend.bg.color = "white")
 tmap_save(ss, "graphics/currentmap.png", dpi = 450)
 
 sscol <- tm_shape(current)+
-  tm_raster(palette = "-YlOrRd", midpoint = NA, style = "cont", title = "Current") +
+  tm_raster(palette = "YlOrRd", midpoint = NA, style = "cont", title = "Current", legend.reverse = T) +
   tm_grid()+
   tm_shape(ponds)+
   tm_dots(size = 0.12, shape = "Group", shapes = c(21, 24), col = "black",
