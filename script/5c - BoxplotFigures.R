@@ -6,27 +6,27 @@
 easypackages::packages("tidyverse", "ggpubr", "sf", "data.table")
 
 #### Load Data ####
-twokm <- readRDS("input/cleaned/BufferStats2km.rds")
-threehm <- readRDS("input/cleaned/BufferStats300m.rds")
+ninem <- readRDS("input/cleaned/BufferStats900m.rds")
+threem <- readRDS("input/cleaned/BufferStats300m.rds")
 habitats <- read_csv("input/cleaned/HabitatNumbers.csv")
 # join all buffer/habitat data 
-twokm <- st_set_geometry(twokm, NULL)
-threehm <- st_set_geometry(threehm, NULL)
-buffers <- inner_join(twokm, threehm, by = "PondName", suffix = c(".two", ".threeh"))
+ninem <- st_set_geometry(ninem, NULL)
+threem <- st_set_geometry(threem, NULL)
+buffers <- inner_join(ninem, threem, by = "PondName", suffix = c(".nine", ".three"))
 habitats <- rename(habitats, PondName = Pond)
 buffers <- inner_join(buffers, habitats, by = "PondName")
 # assign SWF and NAT identifiers
 buffers <- add_column(buffers, Group = "SWF")
 buffers$Group[42:49] = "NAT"
 # select relevant columns 
-buffers_s <- select(buffers, c("PondName", "mean.two", "n.two",
-                               "mean.threeh", "n.threeh",
+buffers_s <- select(buffers, c("PondName", "mean.nine", "n.nine",
+                               "mean.three", "n.three",
                                "Group"))
 # melt
 meltbuffers <- melt(buffers_s, id.vars = c("PondName", "Group"))
 
 #### Figure 1 - Boxplot ####
-levels(meltbuffers$variable) <- c("Mean Current (2 km)", "Number of Surrounding Habitats (2 km)",
+levels(meltbuffers$variable) <- c("Mean Current (900 m)", "Number of Surrounding Habitats (900 m)",
                                   "Mean Current (300 m)", "Number of Surrounding Habitats (300 m)")
 
 ggboxplot(meltbuffers, x = "Group", y = "value", add = "jitter")+
