@@ -56,7 +56,7 @@ habitats300 <- as_tibble(habitats300)
 habitats <- inner_join(habitats900, habitats300, by = "Buffer", suffix = c(".nine", ".three"))
 habitats <- habitats %>%
   rename(Pond = Buffer) %>%
-  select(-c(geometry.two, geometry.threeh))
+  select(-c(geometry.nine, geometry.three))
 
 # save
 write.csv(habitats, "input/cleaned/HabitatNumbers.csv")
