@@ -7,7 +7,7 @@
 easypackages::packages("raster", "data.table", "sf", "tidyverse")
 
 #### Load Data ####
-con <- raster("input/CurrentMap.txt")
+con <- raster("input/CurrentMapRivers.asc")
 ponds <- fread("input/CoorMetre.csv")
 
 #### Create Buffers ####
@@ -26,24 +26,26 @@ saveRDS(ponds, file="input/cleaned/CoorOttawa.rds")
 
 #### Extract Conductance ####
 # extract conductance values for each buffer for dragonflies
-ex2 <- raster::extract(con, ponds, buffer = 2000,df = T)
+ex900 <- raster::extract(con, ponds, buffer = 900,df = T)
 # create dataframes 
-ex2t <- as_tibble(ex2)
+ex900t <- as_tibble(ex900)
 # get mean, median, and summary for each stormwater pond
-summary2 <- ex2t %>% 
+summary900 <- ex900t %>% 
   group_by(ID) %>%
-  summarise(mean = mean(CurrentMap), median = median(CurrentMap), sum = sum(CurrentMap), sd = sd(CurrentMap))
+  summarise(mean = mean(CurrentMapRivers), median = median(CurrentMapRivers), 
+            sum = sum(CurrentMapRivers), sd = sd(CurrentMapRivers))
 # get pond names and coordinates 
-final2 <- cbind(ponds, summary2)
+final900 <- cbind(ponds, summary900)
 # save
-saveRDS(final2, "input/cleaned/BufferStats2km.rds")
+saveRDS(final900, "input/cleaned/BufferStats900m.rds")
 
 # damselflies
 ex300 <- raster::extract(con, ponds, buffer = 300, df = T)
 ex300t <- as_tibble(ex300)
 summary300 <- ex300t %>% 
   group_by(ID) %>%
-  summarise(mean = mean(CurrentMap), median = median(CurrentMap), sum = sum(CurrentMap), sd = sd(CurrentMap))
+  summarise(mean = mean(CurrentMapRivers), median = median(CurrentMapRivers), 
+            sum = sum(CurrentMapRivers), sd = sd(CurrentMapRivers))
 # get pond names and coordinates 
 final300 <- cbind(ponds, summary300)
 # save
