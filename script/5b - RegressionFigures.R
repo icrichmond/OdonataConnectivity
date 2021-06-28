@@ -11,65 +11,65 @@ ani <- fread("input/cleaned/AnisopteraCleaned.csv")
 zyg <- fread("input/cleaned/ZygopteraCleaned.csv")
 
 # select the relevant columns 
-anis <- select(ani, c(Pond, abundance, speciescount, shannon, Group, mean.two, sd.two, n.two))
-zygs <- select(zyg, c(Pond, abundance, speciescount, shannon, Group, mean.threeh, sd.threeh, n.threeh))
+anis <- select(ani, c(Pond, abundance, speciescount, shannon, Group, mean.nine, sd.nine, n.nine))
+zygs <- select(zyg, c(Pond, abundance, speciescount, shannon, Group, mean.three, sd.three, n.three))
 
 #### Figure 1 - Anisoptera Regressions ####
-am <- ggplot(anis, aes(x = mean.two, y = abundance))+
+am <- ggplot(anis, aes(x = mean.nine, y = abundance))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(x = mean.two,y = abundance,label = paste(..rr.label..), group=1), label.y = 295, label.x = -1, size = 5)+
-  stat_regline_equation(aes(x = mean.two,y = abundance), label.y = 310, label.x = -1, size = 5)+
+  stat_cor(aes(x = mean.nine,y = abundance,label = paste(..rr.label..), group=1), label.y = 295, label.x = -1.2, size = 5)+
+  stat_regline_equation(aes(x = mean.nine,y = abundance), label.y = 310, label.x = -1.2, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Mean Current") +
   ylab("Anisoptera Abundance")
 
-asd <- ggplot(anis, aes(x= sd.two, y = abundance))+
+asd <- ggplot(anis, aes(x= sd.nine, y = abundance))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(x = sd.two,y = abundance,label = paste(..rr.label..)), label.y = 290, label.x = 0, size = 5)+
-  stat_regline_equation(aes(x = sd.two, y = abundance), label.y = 310, label.x = 0, size = 5)+
+  stat_cor(aes(x = sd.nine,y = abundance,label = paste(..rr.label..)), label.y = 295, label.x = 0, size = 5)+
+  stat_regline_equation(aes(x = sd.nine, y = abundance), label.y = 310, label.x = 0, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Standard Deviation Current") +
   ylab("Anisoptera Abundance")
 
-ah <- ggplot(anis, aes(n.two, abundance))+
+ah <- ggplot(anis, aes(n.nine, abundance))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(n.two,abundance,label = paste(..rr.label..)), label.y = 290, label.x = 0.45, size = 5)+
-  stat_regline_equation(aes(n.two,abundance), label.y = 310, label.x = 0.45, size = 5)+
+  stat_cor(aes(n.nine,abundance,label = paste(..rr.label..)), label.y = 290, label.x = 0.45, size = 5)+
+  stat_regline_equation(aes(n.nine,abundance), label.y = 310, label.x = 0.45, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Number of Surrounding Habitats") +
   ylab("Anisoptera Abundance")
 
-as <- ggplot(anis, aes(mean.two, shannon))+
+as <- ggplot(anis, aes(mean.nine, shannon))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(mean.two,shannon,label = paste(..rr.label..), group=1), label.y = 2, label.x = -0.35, size = 5)+
-  stat_regline_equation(aes(mean.two,shannon), label.y = 2.1, label.x = -0.35, size = 5)+
+  stat_cor(aes(mean.nine,shannon,label = paste(..rr.label..), group=1), label.y = 2, label.x = -0.35, size = 5)+
+  stat_regline_equation(aes(mean.nine,shannon), label.y = 2.1, label.x = -0.35, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Mean Current") +
   ylab("Anisoptera Shannon Diversity")
 
-srm <- ggplot(anis, aes(mean.two, speciescount))+
+srm <- ggplot(anis, aes(mean.nine, speciescount))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(mean.two,speciescount,label = paste(..rr.label..), group=1), label.y = 12.5, label.x = -0.9, size = 5)+
-  stat_regline_equation(aes(mean.two,speciescount), label.y = 13, label.x = -0.9, size = 5)+
+  stat_cor(aes(mean.nine,speciescount,label = paste(..rr.label..), group=1), label.y = 12.5, label.x = -1.2,  size = 5)+
+  stat_regline_equation(aes(mean.nine,speciescount), label.y = 13, label.x = -1.2, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Mean Current") +
   ylab("Anisoptera Species Richness")
 
-srh <- ggplot(anis, aes(n.two, speciescount))+
+srh <- ggplot(anis, aes(n.nine, speciescount))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(n.two,speciescount,label = paste(..rr.label..), group=1), label.y = 12.5, label.x = 0.4, size = 5)+
-  stat_regline_equation(aes(n.two,speciescount), label.y = 13, label.x = 0.4, size = 5)+
+  stat_cor(aes(n.nine,speciescount,label = paste(..rr.label..), group=1), label.y = 12.5, label.x = 0.4, size = 5)+
+  stat_regline_equation(aes(n.nine,speciescount), label.y = 13, label.x = 0.4, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Number of Surrounding Habitats") +
@@ -81,7 +81,7 @@ ggarrange(am, ah, srm, srh, ncol = 2, nrow = 2, labels = "auto", font.label = li
 ggsave("graphics/AnisopteraRegression.jpg", width = 15, height = 12, dpi = 400)
 
 #### Figure 2 - Anisoptera Species Richness Regressions ####
-zsdc <- ggplot(zygs, aes(x = mean.threeh, y = shannon))+
+zsdc <- ggplot(zygs, aes(x = mean.three, y = shannon))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
   stat_cor(aes(label = paste(..rr.label..), group=1), label.y = 1.8, label.x = -0.3, size = 5)+
@@ -91,7 +91,7 @@ zsdc <- ggplot(zygs, aes(x = mean.threeh, y = shannon))+
   xlab("Mean Current") +
   ylab("Zygoptera Shannon Diversity")
 
-zsdh <- ggplot(zygs, aes(x= n.threeh, y = shannon))+
+zsdh <- ggplot(zygs, aes(x= n.three, y = shannon))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
   stat_cor(aes(label = paste(..rr.label..)), label.y = 1.8, label.x = 16, size = 5)+
@@ -101,7 +101,7 @@ zsdh <- ggplot(zygs, aes(x= n.threeh, y = shannon))+
   xlab("Number of Surrounding Habitats") +
   ylab("Zygoptera Shannon Diversity")
 
-zsrc <- ggplot(zygs, aes(mean.threeh, speciescount))+
+zsrc <- ggplot(zygs, aes(mean.three, speciescount))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
   stat_cor(aes(label = paste(..rr.label..)), label.y = 10.5, label.x = -0.3, size = 5)+
@@ -111,11 +111,11 @@ zsrc <- ggplot(zygs, aes(mean.threeh, speciescount))+
   xlab("Mean Current") +
   ylab("Zygoptera Species Richness")
 
-zsrh <- ggplot(zygs, aes(n.threeh, speciescount))+
+zsrh <- ggplot(zygs, aes(n.three, speciescount))+
   geom_point()+
   geom_smooth(method="lm",se=FALSE,col="black")+
-  stat_cor(aes(label = paste(..rr.label..), group=1), label.y = 10.5, label.x = 16, size = 5)+
-  stat_regline_equation(label.y = 11, label.x = 16, size = 5)+
+  stat_cor(aes(label = paste(..rr.label..), group=1), label.y = 10.5, label.x = 15.5, size = 5)+
+  stat_regline_equation(label.y = 11, label.x = 15.5, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20))+
   xlab("Number of Surrounding Habitats") +
