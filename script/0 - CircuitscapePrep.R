@@ -28,6 +28,42 @@ coordinates(studyponds) <- c("X_Meters", "Y_Meters")
 proj4string(studyponds) <- CRS("+proj=tmerc +lat_0=0 +lon_0=-76.5 +k=0.9999 +x_0=304800 +y_0=0 +datum=NAD83 +units=m")
 studyponds <- st_as_sf(studyponds)
 
+#### Reclassify Land Cover ####
+# Reclassify Ottawa River and Rideau River as a different land cover 
+# Large rivers that are harder to traverse than Wetlands and Water land cover classes
+# select Ottawa River & Rideau River polygons from government dataset (https://open.canada.ca/data/en/dataset/448ec403-6635-456b-8ced-d3ac24143add)
+water_statscan <- st_read("input/landcover/ghy_000c11a_e/ghy_000c11a_e.shp")
+water_statscan <- drop_na(water_statscan)
+rivers <- dplyr::filter(water_statscan, stringr::str_detect(NAME, "Ottawa River") | stringr::str_detect(NAME, "Rideau River"))
+rivers <- st_transform(rivers, "+init=epsg:32189")
+# subset water land cover type from our dataset 
+water <- dplyr::filter(landcov, LABEL == "Water")
+# intersect two land covers
+intersects <- st_intersects(water, rivers)
+# filter out dataset for intersections
+water_rivers <- dplyr::filter(water, lengths(intersects)> 0)
+# reclassify land cover label as "River" 
+water_rivers <- mutate(water_rivers, LABEL = "River")
+# rejoin with water dataset 
+water_rivers <- as.data.frame(water_rivers)
+water_rivers <- dplyr::select(water_rivers, c("OBJECTID", "LABEL"))
+water_join <- full_join(water, water_rivers, by = "OBJECTID")
+water_join$LABEL.y[is.na(water_join$LABEL.y)] <- water_join$LABEL.x[is.na(water_join$LABEL.y)]
+water_join <- water_join %>% 
+  dplyr::select(-c(LABEL.x, geometry)) %>%
+  dplyr::rename(LABEL = LABEL.y)
+# rejoin with main dataset
+water_join <- as.data.frame(water_join)
+water_join <- dplyr::select(water_join, c("OBJECTID", "LABEL"))
+landcov_river <- full_join(water_join, landcov, by = "OBJECTID")
+landcov_river$LABEL.x[is.na(landcov_river$LABEL.x)] <- landcov_river$LABEL.y[is.na(landcov_river$LABEL.x)]
+landcov_river <- landcov_river %>% 
+  dplyr::select(-c(LABEL.y)) %>% 
+  dplyr::rename(LABEL = LABEL.x)
+# save as updated land cover layer 
+st_write(landcov_river, "input/landcover/LandCover2011_Rivers.shp")
+rm(list=ls())
+
 #### Select Relevant Data ####
 # we only want the class wetlands from the land cover dataset 
 wetlands <- dplyr::filter(landcov, LABEL == "Wetland")
