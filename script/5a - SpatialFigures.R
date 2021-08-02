@@ -3,7 +3,8 @@
 # This script is for producing spatial figures for this manuscript
 
 #### Load Packages ####
-easypackages::packages("raster", "sf", "tmap", "tidyverse")
+p <- c("raster", "sf", "tmap")
+lapply(p, library, character.only=T)
 
 #### Load Data ####
 current <- raster("input/CurrentMapRivers.asc")
