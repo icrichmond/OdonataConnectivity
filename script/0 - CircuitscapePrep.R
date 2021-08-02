@@ -5,7 +5,8 @@
 # by Sean Boyle 
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "data.table", "sf", "sp", "spatstat", "maptools")
+p <- c("dplyr", "tidyr", "data.table", "sf", "sp", "spatstat.geom", "maptools")
+lapply(p, library, character.only=T)
 
 #### Load Data ####
 # landcover 
@@ -62,7 +63,6 @@ landcov_river <- landcov_river %>%
   dplyr::rename(LABEL = LABEL.x)
 # save as updated land cover layer 
 st_write(landcov_river, "input/landcover/LandCover2011_Rivers.shp")
-rm(list=ls())
 
 #### Select Relevant Data ####
 # we only want the class wetlands from the land cover dataset 
