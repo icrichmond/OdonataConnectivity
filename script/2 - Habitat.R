@@ -4,7 +4,8 @@
 # each study pond within a 2 km and 300 m buffer
 
 #### Load Packages ####
-easypackages::packages("data.table", "tidyverse", "sf", "sp")
+p <- c("dplyr", "tibble", "data.table", "sf", "sp")
+lapply(p, library, character.only=T)
 
 #### Load Data ####
 allponds <- fread("input/cleaned/PondCoords2km.csv", quote="")
