@@ -4,7 +4,8 @@
 # Odonata communities 
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "data.table", "ggpubr")
+p <- c("broom", "ggplot2", "data.table", "ggpubr")
+lapply(p, library, character.only=T)
 
 #### Load Data & Functions ####
 ani <- fread("input/cleaned/AnisopteraCleaned.csv")

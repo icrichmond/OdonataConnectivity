@@ -3,7 +3,8 @@
 # This code is for cleaning the Odonate data to be usable in models
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "data.table", "vegan")
+p <- c("dplyr", "tibble", "data.table", "vegan", "sf")
+lapply(p, library, character.only=T)
 
 #### Load Data ####
 ode <- fread("input/AdultOdonata.csv")
