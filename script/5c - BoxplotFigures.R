@@ -3,7 +3,8 @@
 # This script is for producing figures for the manuscript 
 
 #### Load Packages ####
-easypackages::packages("tidyverse", "ggpubr", "sf", "data.table")
+p <- c("dplyr", "ggplot2", "data.table", "ggpubr", "sf")
+lapply(p, library, character.only=T)
 
 #### Load Data ####
 ninem <- readRDS("input/cleaned/BufferStats900m.rds")
