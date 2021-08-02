@@ -4,7 +4,8 @@
 # values within the buffers 
 
 #### Load Packages ####
-easypackages::packages("raster", "data.table", "sf", "tidyverse")
+p <- c("dplyr", "tibble", "data.table", "sf", "raster")
+lapply(p, library, character.only=T)
 
 #### Load Data ####
 con <- raster("input/CurrentMapRivers.asc")
