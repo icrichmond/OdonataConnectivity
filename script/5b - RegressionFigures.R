@@ -90,8 +90,8 @@ ggsave("graphics/AnisopteraRegression.jpg", width = 15, height = 12, dpi = 400)
 #### Figure 2 - Anisoptera Species Richness Regressions ####
 zsdc <- ggplot(zygs, aes(x = mean.three, y = shannon))+
   geom_point(aes(size=3))+
-  stat_cor(aes(label = paste(..p.label..), group=1), label.y = 1.9, label.x = -0.3, size = 5)+
-  stat_cor(aes(label = paste(..rr.label..), group=1), label.y = 1.8, label.x = -0.3, size = 5)+
+  stat_cor(aes(label = paste(..rr.label..), group=1), label.y = 1.9, label.x = -0.3, size = 5)+
+  stat_cor(aes(label = paste(..p.label..), group=1), label.y = 1.8, label.x = -0.3, size = 5)+
   theme_classic() +
   theme(text = element_text(size = 20), 
         legend.position = "none")+
