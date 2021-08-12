@@ -4,14 +4,14 @@ Manuscript in preparation for submission to Urban Ecosystems
 
 
 - Authors 
-  - (Isabella C. Richmond)[https://github.com/icrichmond] 
-  - (Mary Ann C. Perron)[https://www.researchgate.net/profile/Mary-Ann-Perron]
-  - (Sean P. Boyle)[https://www.sites.google.com/view/seanboylephd]
-  - (Frances R. Pick)[https://www.researchgate.net/profile/Frances-Pick]
+  - [Isabella C. Richmond](https://github.com/icrichmond)
+  - [Mary Ann C. Perron](https://www.researchgate.net/profile/Mary-Ann-Perron)
+  - [Sean P. Boyle](https://www.sites.google.com/view/seanboylephd)
+  - [Frances R. Pick](https://www.researchgate.net/profile/Frances-Pick)
   
 This repository contains the code and data accompanying the paper "Lack of connectivity around stormwater ponds impacts Odonate abundance and species richness" (In Prep.). R scripts are organized in ```script/```, raw data can be found in ```input/```, figures used in the manuscript can be found in ```graphics/```, and model output tables can be found in ```output```.
 
-Connectivity analysis was done in (Circuitscape)[https://circuitscape.org/].
+Connectivity analysis was done in [Circuitscape](https://circuitscape.org/) GUI.
 
 
 Package dependencies include: ```dplyr```, ```tibble```, ```tidyr```, ```broom```, ```ggplot2```, ```data.table```, ```sf```, ```sp```, ```raster```, ```vegan```, ```ggpubr```.  
