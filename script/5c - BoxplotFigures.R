@@ -3,7 +3,7 @@
 # This script is for producing figures for the manuscript 
 
 #### Load Packages ####
-p <- c("dplyr", "ggplot2", "data.table", "ggpubr", "sf")
+p <- c("dplyr", "ggplot2", "readr", "tibble", "data.table", "ggpubr", "sf")
 lapply(p, library, character.only=T)
 
 #### Load Data ####
@@ -37,7 +37,7 @@ ggboxplot(meltbuffers, x = "Group", y = "value", add = "jitter")+
   scale_x_discrete(labels = c("NAT" = "Natural", "SWF" = "Stormwater"))+
   xlab("Pond Type")+
   ylab("")+
-  stat_compare_means(method = "t.test", size = 5)+
+  stat_compare_means(method = "wilcox.test", size = 5)+
   facet_wrap(~ variable, scales = "free")
 
 ggsave("graphics/ComparisonBoxplots.jpg", width = 12, height = 10, dpi = 400)
