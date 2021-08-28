@@ -46,4 +46,4 @@ qmap(location = "Ottawa, Ontario", maptype = "satellite", source = "google") +
                       values = c("burlywood4", "burlywood"))
 ```
 \newline
-Figure 1. Study area map. Study sites are grouped by pond type, n = 8 natural ponds and n = 41 stormwater facilities. Satellite imagery retrieved from Google Maps on August 3, 2021. Location geocode used was "Ottawa, Ontario". Geographic coordinate system is WGS84 (epsg: 4326).
+Figure S1-1. Study area map. Study sites are grouped by pond type, n = 8 natural ponds and n = 41 stormwater facilities. Satellite imagery retrieved from Google Maps on August 3, 2021. Location geocode used was "Ottawa, Ontario". Geographic coordinate system is WGS84 (epsg: 4326).
