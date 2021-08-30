@@ -12,7 +12,7 @@ Manuscript in preparation for submission to Urban Ecosystems
 This repository contains the code and data accompanying the paper "Lack of connectivity around stormwater ponds impacts Odonate abundance and species richness" (In Prep.). R scripts are organized in ```script/```, raw data can be found in ```input/```, figures used in the manuscript can be found in ```graphics/```, and model output tables can be found in ```output```.
 
 Odonate dataset was originally archived in [Dataverse](https://dataverse.scholarsportal.info/dataset.xhtml?persistentId=doi:10.5683/SP2/JKRF0M)  
-All code & data is archived on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5337110.svg)](https://doi.org/10.5281/zenodo.5337110)
+All code & data is archived on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5337110.svg)](https://zenodo.org/record/5337110)
 
 
 Connectivity analysis was done in [Circuitscape](https://circuitscape.org/) GUI.
