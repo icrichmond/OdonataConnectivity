@@ -48,14 +48,16 @@ anova.cca(spe.rda.ani.habs, step=1000, by="axis")
 
 
 #### Plotting ####
-currentplot <- autoplot(spe.rda.ani.current, colour = ("grey"), const = 2)+
+currentplot <- autoplot(spe.rda.ani.current, const = 2)+
   theme_classic()+
+  xlim(-0.5, 1.3) + 
   theme(legend.position = "none")
-
 
 habplot <- autoplot(spe.rda.ani.habs, const = 2)+
   theme_classic()+
+  xlim(-0.5, 1.3)+
   theme(legend.position = "none")
 
-
-currentplot + habplot
+p <- currentplot + habplot
+p + plot_annotation(tag_levels = "a")
+ggsave("graphics/RDA/AnisopteraCommunityComposition.jpg", dpi = 400)
