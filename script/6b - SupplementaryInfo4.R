@@ -9,17 +9,13 @@ lapply(p, library, character.only=T)
 #### Load Data ####
 # odonates 
 AdultZygoptera <- read.csv("input/cleaned/ZygopteraCleaned.csv")
-AdultAnisoptera <- read.csv("input/cleaned/AnisopteraCleaned.csv")
 # mean current density 
 Current300 <- dplyr::select(AdultZygoptera, c(mean.three))
-Current900 <- dplyr::select(AdultAnisoptera, c(mean.nine))
 # number of surrounding habitats 
 Habitats300 <- dplyr::select(AdultZygoptera, c(n.three))
-Habitats900 <- dplyr::select(AdultAnisoptera, c(n.nine))
 
 # remove extra columns from odonate datasets 
 AdultZygoptera <- AdultZygoptera[,2:21]
-AdultAnisoptera <- AdultAnisoptera[,2:33]
 
 
 #### Redundancy Analyses (RDA) ####
