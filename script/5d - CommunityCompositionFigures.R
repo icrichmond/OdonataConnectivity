@@ -48,30 +48,6 @@ anova.cca(spe.rda.ani.habs, step=1000, by="axis")
 
 
 #### Plotting ####
-current_fort <- fortify(spe.rda.ani.current)
-take <- c('RDA1', 'PC1')  # which columns contain the scores we want
-arrows <- subset(current_fort, Score == 'biplot' | Score == 'species')  # take biplot and species arrow scores
-## multiplier for arrows to scale them to the plot range
-mul <- ggvegan:::arrowMul(arrows[, take],
-                          subset(current_fort, select = take, Score == 'sites'))
-arrows[, take] <- arrows[, take] * mul  # scale arrows
-
-ggplot() +
-  geom_point(data = subset(current_fort, Score == 'sites'),
-             mapping = aes(x = RDA1, y = PC1)) + 
-  geom_segment(data = arrows,
-               mapping = aes(x = 0, y = 0, xend = RDA1, yend = PC1),
-               arrow = arrow(length = unit(0.01, "npc"))) +
-  geom_text(data = arrows,
-            mapping = aes(label = Label, x = RDA1, y = PC1, hjust = 0.5*(1 - sign(RDA1)), vjust = 0.5*(1-sign(PC1)))) +
-  coord_fixed() +
-  scale_x_continuous(expand = c(.1, .1)) +
-  scale_y_continuous(expand = c(.1, .1)) + 
-  theme_classic()
-
-
-
-
 currentplot <- autoplot(spe.rda.ani.current, colour = ("grey"), const = 2)+
   theme_classic()+
   theme(legend.position = "none")
