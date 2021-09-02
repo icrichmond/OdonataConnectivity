@@ -3,22 +3,20 @@
 # This script is for producing and analyzing redundancy analyses performed on community composition data
 
 #### Load Packages ####
-p <- c("dplyr", "vegan")
+# ggvegan not available on CRAN yet 
+#install.packages("devtools")
+#devtools::install_github("gavinsimpson/ggvegan")
+p <- c("dplyr", "vegan", "ggvegan", "patchwork")
 lapply(p, library, character.only=T)
 
 #### Load Data ####
 # odonates 
-AdultZygoptera <- read.csv("input/cleaned/ZygopteraCleaned.csv")
 AdultAnisoptera <- read.csv("input/cleaned/AnisopteraCleaned.csv")
 # mean current density 
-Current300 <- dplyr::select(AdultZygoptera, c(mean.three))
 Current900 <- dplyr::select(AdultAnisoptera, c(mean.nine))
 # number of surrounding habitats 
-Habitats300 <- dplyr::select(AdultZygoptera, c(n.three))
 Habitats900 <- dplyr::select(AdultAnisoptera, c(n.nine))
-
 # remove extra columns from odonate datasets 
-AdultZygoptera <- AdultZygoptera[,2:21]
 AdultAnisoptera <- AdultAnisoptera[,2:33]
 
 
@@ -48,47 +46,40 @@ ordiR2step(rda(spe.hel.ani~1, data=Habitats900), scope= formula(spe.rda.ani.habs
 anova.cca(spe.rda.ani.habs, step=1000)
 anova.cca(spe.rda.ani.habs, step=1000, by="axis")
 
-# Dragonflies / Mean Current Density @ 900 m
-jpeg("graphics/RDA/AnisopteraMeanCurrent.jpg")
-plot(spe.rda.ani.current, scaling=2, main="Triplot RDA - scaling 2", type="none", xlab=c("RDA1"), ylab=c("RDA2"), xlim=c(-1,1), ylim=c(-1.5,1.75))
-points(scores(spe.rda.ani.current, display="sites", choices=c(1,2), scaling=2),
-       pch=21, col="black", bg="steelblue", cex=1.2)
-arrows(0,0,
-       scores(spe.rda.ani.current, display="species", choices=c(1), scaling=2)*2,
-       scores(spe.rda.ani.current, display="species", choices=c(2), scaling=2)*2,
-       col="black",length=0)
-text(scores(spe.rda.ani.current, display="species", choices=c(1), scaling=2)*2.1,
-     scores(spe.rda.ani.current, display="species", choices=c(2), scaling=2)*2.1,
-     labels=rownames(scores(spe.rda.ani.current, display="species", scaling=2)),
-     col="black", cex=0.8)    
-arrows(0,0,
-       scores(spe.rda.ani.current, display="bp", choices=c(1), scaling=2),
-       scores(spe.rda.ani.current, display="bp", choices=c(2), scaling=2),
-       col="red")
-text(scores(spe.rda.ani.current, display="bp", choices=c(1), scaling=2)+0.05,
-     scores(spe.rda.ani.current, display="bp", choices=c(2), scaling=2)+0.05,
-     labels=rownames(scores(spe.rda.ani.current, display="bp", choices=c(2), scaling=2)),
-     col="red", cex=1)  
-dev.off()
-# Dragonflies / Number of Surrounding Habitats @ 900 m
-jpeg("graphics/RDA/AnisopteraSurroundingHabitats.jpg")
-plot(spe.rda.ani.habs, scaling=2, main="Triplot RDA - scaling 2", type="none", xlab=c("RDA1"), ylab=c("RDA2"), xlim=c(-1,1), ylim=c(-1.5,1.75))
-points(scores(spe.rda.ani.habs, display="sites", choices=c(1,2), scaling=2),
-       pch=21, col="black", bg="steelblue", cex=1.2)
-arrows(0,0,
-       scores(spe.rda.ani.habs, display="species", choices=c(1), scaling=2)*2,
-       scores(spe.rda.ani.habs, display="species", choices=c(2), scaling=2)*2,
-       col="black",length=0)
-text(scores(spe.rda.ani.habs, display="species", choices=c(1), scaling=2)*2.1,
-     scores(spe.rda.ani.habs, display="species", choices=c(2), scaling=2)*2.1,
-     labels=rownames(scores(spe.rda.ani.habs, display="species", scaling=2)),
-     col="black", cex=0.8)    
-arrows(0,0,
-       scores(spe.rda.ani.habs, display="bp", choices=c(1), scaling=2),
-       scores(spe.rda.ani.habs, display="bp", choices=c(2), scaling=2),
-       col="red")
-text(scores(spe.rda.ani.habs, display="bp", choices=c(1), scaling=2)+0.05,
-     scores(spe.rda.ani.habs, display="bp", choices=c(2), scaling=2)+0.05,
-     labels=rownames(scores(spe.rda.ani.habs, display="bp", choices=c(2), scaling=2)),
-     col="red", cex=1)  
-dev.off()
+
+#### Plotting ####
+current_fort <- fortify(spe.rda.ani.current)
+take <- c('RDA1', 'PC1')  # which columns contain the scores we want
+arrows <- subset(current_fort, Score == 'biplot' | Score == 'species')  # take biplot and species arrow scores
+## multiplier for arrows to scale them to the plot range
+mul <- ggvegan:::arrowMul(arrows[, take],
+                          subset(current_fort, select = take, Score == 'sites'))
+arrows[, take] <- arrows[, take] * mul  # scale arrows
+
+ggplot() +
+  geom_point(data = subset(current_fort, Score == 'sites'),
+             mapping = aes(x = RDA1, y = PC1)) + 
+  geom_segment(data = arrows,
+               mapping = aes(x = 0, y = 0, xend = RDA1, yend = PC1),
+               arrow = arrow(length = unit(0.01, "npc"))) +
+  geom_text(data = arrows,
+            mapping = aes(label = Label, x = RDA1, y = PC1, hjust = 0.5*(1 - sign(RDA1)), vjust = 0.5*(1-sign(PC1)))) +
+  coord_fixed() +
+  scale_x_continuous(expand = c(.1, .1)) +
+  scale_y_continuous(expand = c(.1, .1)) + 
+  theme_classic()
+
+
+
+
+currentplot <- autoplot(spe.rda.ani.current, colour = ("grey"), const = 2)+
+  theme_classic()+
+  theme(legend.position = "none")
+
+
+habplot <- autoplot(spe.rda.ani.habs, const = 2)+
+  theme_classic()+
+  theme(legend.position = "none")
+
+
+currentplot + habplot
