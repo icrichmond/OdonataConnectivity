@@ -1,6 +1,6 @@
 # Lack of connectivity around stormwater ponds impacts Odonate abundance and species richness  
 
-Manuscript in preparation for submission to Urban Ecosystems   
+Manuscript in preparation for submission to Landscape Ecology  
 
 
 - Authors 
