@@ -3,42 +3,52 @@
 # This script is for producing spatial figures for this manuscript
 
 #### Load Packages ####
-p <- c("raster", "sf", "tmap")
+p <- c('stars', 'sf', 'tibble', 'dplyr', 'purrr', 'ggmap', 'ggplot2', 'patchwork')
 lapply(p, library, character.only=T)
 
 #### Load Data ####
-current <- raster("input/CurrentMapRivers.asc")
+current <- read_stars("input/CurrentMapRivers.asc")
 ponds <- readRDS("input/cleaned/CoorOttawa.rds")
 # assign CRS to current map
-crs(current) <- "+proj=tmerc +lat_0=0 +lon_0=-76.5 +k=0.9999 +x_0=304800 +y_0=0 +datum=NAD83 +units=m +no_defs"
-# assign SWF and NAT identifiers
+st_crs(current) <- "+proj=tmerc +lat_0=0 +lon_0=-76.5 +k=0.9999 +x_0=304800 +y_0=0 +datum=NAD83 +units=m +no_defs"
 ponds <- add_column(ponds, Group = "SWF")
 ponds$Group[42:49] = "NAT"
+current_df <- as.data.frame(current, xy = TRUE) %>%
+  na.omit()
 
-#### Reproject ####
-# reproject data into WGS 84 for ease of interpretation
-current <- projectRaster(current, crs="+init=epsg:4326")
-wgs84 <- st_crs('EPSG:4326')
-ponds <- st_transform(ponds, wgs84)
 
 #### Study Site Figure ####
-# greyscale
-ss <- tm_shape(current)+
-  tm_raster(palette = "Greys", midpoint = NA, style = "cont", title = "Current", legend.reverse = T) +
-tm_grid()+
-tm_shape(ponds)+
-  tm_dots(size = 0.12, shape = "Group", shapes = c(21, 24), col = "black",
-          title.shape = "Pond Type", shapes.labels = c("Natural", "Stormwater"))+
-tm_layout(legend.position = c("left", "bottom"), legend.bg.color = "white")
+# Circuitscape
+sscol <- ggplot() + 
+  geom_raster(data = current_df, aes(x = x, y = y, fill = CurrentMapRivers.asc)) + 
+  coord_equal() + 
+  geom_sf(aes(shape = Group), data = ponds) +
+  scale_shape_manual(labels = c('Natural', 'Stormwater'), values = c(21, 24)) + 
+  scale_fill_viridis_c(direction = -1, option = '') + 
+  theme(legend.position = 'top',
+        legend.title = element_blank(), 
+        panel.border = element_rect(size = 1, fill = NA),
+        panel.background = element_rect(fill = NA),
+        panel.grid = element_line(color = '323232', size = 0.2),
+        axis.text = element_text(size = 11, color = 'black'),
+        axis.title = element_blank(), 
+        plot.background = element_rect(fill = NA, colour = NA))
 
-tmap_save(ss, "graphics/currentmap.png", dpi = 450)
+# satellite imagery
+# reproject data into WGS 84 for ease of interpretation
+ponds_t <- st_transform(ponds, 4326)
+# extract latitude and longitude 
+ponds_e <- ponds_t %>%
+  mutate(lat = unlist(map(ponds_t$geometry,1)),
+         long = unlist(map(ponds_t$geometry,2)))
+# API: AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c
+register_google(key = "AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c")
+satcol <- qmap(location = "Ottawa, Ontario", maptype = "satellite", source = "google") +
+  geom_point(data = ponds_e, aes(x = lat, y = long, shape = Group), size = 2) + 
+  scale_shape_manual(values = c(21, 24)) + 
+  theme(legend.position = 'none')
 
-sscol <- tm_shape(current)+
-  tm_raster(palette = "YlOrRd", midpoint = NA, style = "cont", title = "Current", legend.reverse = T) +
-  tm_grid()+
-  tm_shape(ponds)+
-  tm_dots(size = 0.12, shape = "Group", shapes = c(21, 24), col = "black",
-          title.shape = "Pond Type", shapes.labels = c("Natural", "Stormwater"))+
-  tm_layout(legend.position = c("left", "bottom"), legend.bg.color = "white")
+sscol + satcol + plot_layout(widths = c(2,1))
 
-tmap_save(sscol, "graphics/currentmapcolour.png", dpi = 450)
+
+ggsave('graphics/studymapcolour.png', dpi = 450)
