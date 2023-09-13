@@ -24,7 +24,7 @@ sscol <- ggplot() +
   coord_equal() + 
   geom_sf(aes(shape = Group), data = ponds) +
   scale_shape_manual(labels = c('Natural', 'Stormwater'), values = c(21, 24)) + 
-  scale_fill_viridis_c(direction = -1, option = '') + 
+  scale_fill_viridis_c(direction = -1, option = 'B') + 
   theme(legend.position = 'top',
         legend.title = element_blank(), 
         panel.border = element_rect(size = 1, fill = NA),
@@ -43,7 +43,7 @@ ponds_e <- ponds_t %>%
          long = unlist(map(ponds_t$geometry,2)))
 # API: AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c
 register_google(key = "AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c")
-satcol <- qmap(location = "Ottawa, Ontario", maptype = "satellite", source = "google") +
+satcol <- qmap(location = "Ottawa, Ontario", zoom = 9, maptype = "satellite", source = "google") +
   geom_point(data = ponds_e, aes(x = lat, y = long, shape = Group), size = 2) + 
   scale_shape_manual(values = c(21, 24)) + 
   theme(legend.position = 'none')
