@@ -51,4 +51,4 @@ satcol <- qmap(location = "Ottawa, Ontario", zoom = 9, maptype = "satellite", so
 sscol + satcol + plot_layout(widths = c(2,1))
 
 
-ggsave('graphics/studymapcolour.png', dpi = 450)
+ggsave('graphics/studymapcolour.jpg', dpi = 450)

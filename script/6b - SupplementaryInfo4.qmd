@@ -1,0 +1,180 @@
+---
+format: 
+  pdf:
+    classoption: [landscape]
+
+editor: visual
+---
+
+Title: Connectivity of stormwater ponds impacts Odonata abundance and species richness
+
+Journal: Landscape Ecology
+
+Authors: Richmond, Isabella C.\*, Perron, Mary Ann C., Boyle, Sean B., & Pick, Frances R.
+
+\* Department of Biology, 30 Marie Curie Private, University of Ottawa, Ottawa, Ontario K1N 6N5, Canada Department of Biology, 7141 Sherbrooke St. W., Concordia University, Montreal, QC, Canada, H4B 1R6
+
+email: [isabella.richmond\@mail.concordia.ca](isabella.richmond@mail.concordia.ca), phone : 438-439-8064
+
+**Supplementary Information**
+
+This Supplementary Information provides fine-scale details for each of our study ponds. Table S4-1 outlines descriptive characteristics of each pond, like age and area. Table S4-2 details the observed odonate data at each pond, including abundance, species richness, and shannon diversity. Table S4-3 describes the connectivity data at each pond, including mean and standard variation for current values, as well as number of nearest neighbours. All code and data for this project can be found at https://github.com/icrichmond/OdonataConnectivity.
+
+\newpage
+
+Table S4-1. Pond descriptive characteristics. SWF = stormwater pond, NAT = natural pond. Coordinates are in WGS 84. Some data were not available for each pond, indicated by a na or NA.
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(gt)
+
+setwd("C:/Users/I_RICHMO/Documents/Repositories/odonata-connectivity")
+
+# data
+ani <- read.csv('input/cleaned/AnisopteraCleaned.csv') %>%
+  mutate(DragonflyAbundance = abundance,
+         DragonflySpeciesRich = speciescount, 
+         DragonflyShannon = shannon) %>%
+  select(Pond, Group, DragonflyAbundance, DragonflySpeciesRich, DragonflyShannon, mean.nine, sd.nine)
+zyg <- read.csv('input/cleaned/ZygopteraCleaned.csv')%>%
+  mutate(DamselflyAbundance = abundance,
+         DamselflySpeciesRich = speciescount, 
+         DamselflyShannon = shannon) %>%
+  select(Pond, DamselflyAbundance, DamselflySpeciesRich, DamselflyShannon, mean.three, sd.three)
+hab <- read.csv('input/cleaned/HabitatNumbers.csv') %>%
+  select(-X)
+ponds <- read.csv('input/pond_descriptive.csv')
+
+
+# join
+anizyg <- full_join(ani, zyg, by = "Pond")
+pondshab <- left_join(hab, ponds, by = "Pond")
+all <- full_join(anizyg, pondshab, by = "Pond")
+
+# clean up
+df<- all %>%
+  select(Pond, Group, X, Y, age..years., area..m2., catchment..km2., imperviousness.of.catchment....) %>%
+  rename('X coordinate' = X,
+         'Y coordinate' = Y,
+         'Age (years)' = age..years.,
+         'Area (m2)' = area..m2., 
+         'Catchment Area (km2)' = catchment..km2.,
+         'Imperviousness of Catchment (%)' = imperviousness.of.catchment....) %>%
+  gt() %>%
+  as_latex()
+
+df
+```
+
+\newpage
+
+```{=tex}
+\begingroup
+\setlength{\LTleft}{0pt minus 500pt}
+\setlength{\LTright}{0pt minus 500pt}
+\fontsize{7pt}{9pt}\selectfont
+\addtolength{\tabcolsep}{-3pt}
+```
+Table S4-2. Pond odonate data. SWF = stormwater pond, NAT = natural pond.
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(gt)
+
+setwd("C:/Users/I_RICHMO/Documents/Repositories/odonata-connectivity")
+
+# data
+ani <- read.csv('input/cleaned/AnisopteraCleaned.csv') %>%
+  mutate(DragonflyAbundance = abundance,
+         DragonflySpeciesRich = speciescount, 
+         DragonflyShannon = shannon) %>%
+  select(Pond, Group, DragonflyAbundance, DragonflySpeciesRich, DragonflyShannon, mean.nine, sd.nine)
+zyg <- read.csv('input/cleaned/ZygopteraCleaned.csv')%>%
+  mutate(DamselflyAbundance = abundance,
+         DamselflySpeciesRich = speciescount, 
+         DamselflyShannon = shannon) %>%
+  select(Pond, DamselflyAbundance, DamselflySpeciesRich, DamselflyShannon, mean.three, sd.three)
+hab <- read.csv('input/cleaned/HabitatNumbers.csv') %>%
+  select(-X)
+ponds <- read.csv('input/pond_descriptive.csv')
+
+
+# join
+anizyg <- full_join(ani, zyg, by = "Pond")
+pondshab <- left_join(hab, ponds, by = "Pond")
+all <- full_join(anizyg, pondshab, by = "Pond")
+
+# clean up
+df<- all %>%
+  select(Pond, Group, DragonflyAbundance, DragonflySpeciesRich, DragonflyShannon, DamselflyAbundance, DamselflySpeciesRich, DamselflyShannon) %>%
+  rename('Dragonfly Abundance' = DragonflyAbundance,
+         'Dragonfly Species Richness' = DragonflySpeciesRich, 
+         'Dragonfly Shannon Diversity' = DragonflyShannon,
+         'Damselfly Abundance' = DamselflyAbundance,
+         'Damselfly Species Richness' = DamselflySpeciesRich,
+         'Damselfly Shannon Diversity' = DamselflyShannon) %>%
+  gt() %>%
+  as_latex()
+
+df
+```
+
+```{=tex}
+\endgroup
+```
+\newpage
+
+```{=tex}
+\begingroup
+\setlength{\LTleft}{0pt minus 500pt}
+\setlength{\LTright}{0pt minus 500pt}
+\fontsize{5pt}{7pt}\selectfont
+\addtolength{\tabcolsep}{-3pt}
+```
+Table S4-3. Pond connectivity data. SWF = stormwater pond, NAT = natural pond. 900 m scale was used for dragonflies, 300 m scale was used for damselflies.
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(gt)
+
+setwd("C:/Users/I_RICHMO/Documents/Repositories/odonata-connectivity")
+
+# data
+ani <- read.csv('input/cleaned/AnisopteraCleaned.csv') %>%
+  mutate(DragonflyAbundance = abundance,
+         DragonflySpeciesRich = speciescount, 
+         DragonflyShannon = shannon) %>%
+  select(Pond, Group, DragonflyAbundance, DragonflySpeciesRich, DragonflyShannon, mean.nine, sd.nine)
+zyg <- read.csv('input/cleaned/ZygopteraCleaned.csv')%>%
+  mutate(DamselflyAbundance = abundance,
+         DamselflySpeciesRich = speciescount, 
+         DamselflyShannon = shannon) %>%
+  select(Pond, DamselflyAbundance, DamselflySpeciesRich, DamselflyShannon, mean.three, sd.three)
+hab <- read.csv('input/cleaned/HabitatNumbers.csv') %>%
+  select(-X)
+ponds <- read.csv('input/pond_descriptive.csv')
+
+
+# join
+anizyg <- full_join(ani, zyg, by = "Pond")
+pondshab <- left_join(hab, ponds, by = "Pond")
+all <- full_join(anizyg, pondshab, by = "Pond")
+
+# clean up
+df<- all %>%
+  select(Pond, Group, mean.nine, sd.nine, n.nine, mean.three, sd.three, n.three) %>%
+  rename('Mean Current Density (900 m)' = mean.nine,
+         'Std. Dev. Current Density (900 m)' = sd.nine,
+         'Mean Current Density (300 m)' = mean.three,
+         'Std. Dev. Current Density (300 m)' = sd.three,
+         'Number of Nearest Neighbours (900 m)' = n.nine,
+         'Number of Nearest Neighbours (300 m)' = n.three) %>%
+  gt() %>%
+  as_latex()
+
+df
+```
+
+```{=tex}
+\endgroup
+```
