@@ -30,8 +30,9 @@ sscol <- ggplot() +
         panel.border = element_rect(size = 1, fill = NA),
         panel.background = element_rect(fill = NA),
         panel.grid = element_line(color = '323232', size = 0.2),
-        axis.text = element_text(size = 11, color = 'black'),
+        axis.text = element_text(size = 13, color = 'black'),
         axis.title = element_blank(), 
+        legend.text = element_text(size = 20),
         plot.background = element_rect(fill = NA, colour = NA))
 
 # satellite imagery
@@ -46,7 +47,13 @@ register_google(key = "AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c")
 satcol <- qmap(location = "Ottawa, Ontario", zoom = 9, maptype = "satellite", source = "google") +
   geom_point(data = ponds_e, aes(x = lat, y = long, shape = Group), size = 2) + 
   scale_shape_manual(values = c(21, 24)) + 
-  theme(legend.position = 'none')
+  theme(legend.position = 'none',
+        panel.border = element_rect(size = 1, fill = NA),
+        panel.background = element_rect(fill = NA),
+        panel.grid = element_line(color = 'black', size = 0.2),
+        axis.text = element_text(size = 13, color = 'black'),
+        axis.title = element_blank(), 
+        panel.ontop = TRUE)
 
 sscol + satcol + plot_layout(widths = c(2,1))
 
